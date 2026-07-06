@@ -138,7 +138,7 @@ async function loadDatabase() {
   ).join("");
   
   try {
-    const res = await fetch('/api/dishes');
+    const res = await fetch(`/api/dishes?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     dishesList = await res.json();
     console.log(`Loaded ${dishesList.length} dishes from server.`);
@@ -164,7 +164,7 @@ async function loadDatabase() {
 
 async function loadPromos() {
   try {
-    const res = await fetch('/api/promos');
+    const res = await fetch(`/api/promos?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     promoCodesList = await res.json();
     console.log(`Loaded ${promoCodesList.length} promos from server.`);
@@ -225,7 +225,7 @@ async function renderStats() {
   
   // Fetch and display monitoring stats
   try {
-    const res = await fetch('/api/stats');
+    const res = await fetch(`/api/stats?t=${Date.now()}`);
     if (res.ok) {
       const stats = await res.json();
       const visitsDinein = document.getElementById("stats-visits-dinein");

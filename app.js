@@ -215,7 +215,7 @@ async function handleApplyPromo() {
   // Load promocodes list from backend
   let promos = [];
   try {
-    const res = await fetch('/api/promos');
+    const res = await fetch(`/api/promos?t=${Date.now()}`);
     if (res.ok) {
       promos = await res.json();
     } else {
@@ -268,7 +268,7 @@ function showPromoMsg(text, type) {
 // Dishes List Database Loader
 async function loadDishes() {
   try {
-    const res = await fetch('/api/dishes');
+    const res = await fetch(`/api/dishes?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     dishesList = await res.json();
     console.log(`Successfully fetched ${dishesList.length} dishes from backend API.`);

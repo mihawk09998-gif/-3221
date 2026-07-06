@@ -132,7 +132,7 @@ if (fs.existsSync(publicDir) && fs.statSync(publicDir).isDirectory()) {
 // Redirect /admin to /admin/ relatively to prevent HTTP protocol downgrade on reverse proxies
 app.get('/admin', (req, res, next) => {
   if (req.path === '/admin') {
-    return res.redirect(301, '/admin/');
+    return res.redirect(302, '/admin/');
   }
   next();
 });
@@ -260,6 +260,7 @@ app.post('/api/order', async (req, res) => {
 
 // 1. GET ALL DISHES
 app.get('/api/dishes', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   return res.status(200).json(dishesDb);
 });
 
@@ -326,6 +327,7 @@ app.delete('/api/dishes/:id', (req, res) => {
 
 // 5. GET ALL PROMO CODES
 app.get('/api/promos', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   return res.status(200).json(promosDb);
 });
 
