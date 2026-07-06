@@ -1533,30 +1533,7 @@ ${itemsMarkdown}
 
   console.log("Отправка заказа на сервер...", orderData);
 
-  // 2. DISPATCH METHOD CHECK
-  
-  // Method A: Telegram WebApp Mode (sendData back to the hosting bot)
-  if (isTelegramWebApp) {
-    try {
-      const tg = window.Telegram.WebApp;
-      tg.sendData(JSON.stringify(orderData));
-      
-      // Close WebApp
-      setTimeout(() => {
-        tg.close();
-      }, 500);
-      
-      console.log("Заказ отправлен через Telegram WebApp sendData");
-      handleSuccessOrder();
-      DOM.verifConfirmBtn.disabled = false;
-      DOM.verifConfirmBtn.innerHTML = originalBtnContent;
-      return;
-    } catch (e) {
-      console.error("Telegram WebApp sendData failed, trying Bot API fallback:", e);
-    }
-  }
-  
-  // Method B: Try Express backend dispatch first
+  // Try Express backend dispatch first
   try {
     const res = await fetch("/api/order", {
       method: "POST",
@@ -1571,6 +1548,18 @@ ${itemsMarkdown}
     const data = await res.json();
     console.log("Заказ успешно отправлен и обработан сервером:", data);
     handleSuccessOrder();
+
+    // Close WebApp on success if in Telegram Mode
+    if (isTelegramWebApp) {
+      try {
+        const tg = window.Telegram.WebApp;
+        setTimeout(() => {
+          tg.close();
+        }, 1000);
+      } catch (tgErr) {
+        console.warn("Failed to close Telegram WebApp:", tgErr);
+      }
+    }
   } catch (err) {
     console.error("Express order dispatch failed:", err);
     
