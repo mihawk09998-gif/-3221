@@ -201,7 +201,7 @@ app.post('/api/order', async (req, res) => {
       } else if (order.payment.method === "card") {
         payText = "Картой курьеру";
       } else {
-        payText = "Онлайн на сайте";
+        payText = "Оплата по QR коду";
       }
 
       messageText = `🔔 *НОВЫЙ ЗАКАЗ #${order.orderId}*\n` +

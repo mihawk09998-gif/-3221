@@ -1,7 +1,7 @@
 {
   "name": "САМОР - Доставка еды",
   "short_name": "САМОР",
-  "description": "Электронное меню и доставка еды из ресторана САМОР в Бишкеке",
+  "description": "Электронное меню и доставка еды из ресторана САМОР в Караколе",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

@@ -1402,7 +1402,7 @@ function openVerificationModal() {
   } else if (paymentMethod === "card") {
     payText = "Картой курьеру";
   } else {
-    payText = "Онлайн на сайте";
+    payText = "Оплата по QR коду";
   }
 
   DOM.verifDetailsList.innerHTML = `
@@ -1500,7 +1500,7 @@ async function handleConfirmOrder() {
   } else if (paymentMethod === "card") {
     payText = "Картой курьеру";
   } else {
-    payText = "Онлайн на сайте";
+    payText = "Оплата по QR коду";
   }
 
   // Format beautifully for Telegram Bot channel with Markdown
