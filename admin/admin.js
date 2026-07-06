@@ -332,11 +332,11 @@ function renderDishesTable(query = "") {
 // CRUD MODAL MANAGEMENT
 // ==========================================================================
 function openModal(modal) {
-  modal.classList.add("visible");
+  modal.classList.add("open");
 }
 
 function closeModal(modal) {
-  modal.classList.remove("visible");
+  modal.classList.remove("open");
   DOM.dishForm.reset();
   DOM.discountPriceContainer.classList.remove("active");
   // Clean error styles
@@ -772,13 +772,13 @@ function setupListeners() {
   // Tab Selection Triggers
   if (DOM.tabDishes) {
     DOM.tabDishes.addEventListener("click", (e) => {
-      const btn = e.target.closest(".tab-btn");
+      const btn = e.target.closest(".admin-tab-btn");
       if (btn) switchTab("dishes");
     });
   }
   if (DOM.tabPromocodes) {
     DOM.tabPromocodes.addEventListener("click", (e) => {
-      const btn = e.target.closest(".tab-btn");
+      const btn = e.target.closest(".admin-tab-btn");
       if (btn) switchTab("promocodes");
     });
   }
