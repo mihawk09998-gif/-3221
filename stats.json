@@ -1,0 +1,11 @@
+{
+  "visits": {
+    "dine_in": 0,
+    "delivery": 0
+  },
+  "orders": {
+    "dine_in": 0,
+    "delivery": 0
+  },
+  "revenue": 0
+}

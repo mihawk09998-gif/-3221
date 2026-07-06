@@ -94,6 +94,30 @@
       </div>
     </section>
 
+    <!-- Monitoring & Analytics Grid -->
+    <section class="admin-stats" style="margin-top: 16px;">
+      <div class="stat-card glass" style="border-color: rgba(212, 175, 55, 0.15);">
+        <h3>Посещения (В зале / Доставка)</h3>
+        <div class="value" style="font-size: 1.4rem; display: flex; gap: 12px; margin-top: 8px; font-weight: 800;">
+          <span style="color: var(--accent-gold);" id="stats-visits-dinein">🍽️ 0</span>
+          <span style="color: var(--text-muted); font-weight: 300;">|</span>
+          <span style="color: #3498db;" id="stats-visits-delivery">🚗 0</span>
+        </div>
+      </div>
+      <div class="stat-card glass" style="border-color: rgba(212, 175, 55, 0.15);">
+        <h3>Заказы (В зале / Доставка)</h3>
+        <div class="value" style="font-size: 1.4rem; display: flex; gap: 12px; margin-top: 8px; font-weight: 800;">
+          <span style="color: var(--accent-gold);" id="stats-orders-dinein">🍽️ 0</span>
+          <span style="color: var(--text-muted); font-weight: 300;">|</span>
+          <span style="color: #3498db;" id="stats-orders-delivery">🚗 0</span>
+        </div>
+      </div>
+      <div class="stat-card glass" style="border-color: rgba(39, 174, 96, 0.25);">
+        <h3>Общая выручка</h3>
+        <div class="value" style="color: #27ae60;" id="stats-total-revenue">0 сом</div>
+      </div>
+    </section>
+
     <!-- Tab Navigation -->
     <div class="admin-tabs" style="display: flex; gap: 16px; margin: 24px 0 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 12px;">
       <button class="admin-tab-btn active" id="tab-dishes">Блюда</button>

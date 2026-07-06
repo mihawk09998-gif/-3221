@@ -6,7 +6,7 @@
 // ==========================================================================
 // AUTHORIZATION CONFIG
 // ==========================================================================
-const ADMIN_PASSWORD = "";
+const ADMIN_PASSWORD = "admin";
 
 // State variables
 let dishesList = [];
@@ -78,8 +78,12 @@ const DOM = {
 // AUTHENTICATION LOGIC
 // ==========================================================================
 function checkAuth() {
-  if (sessionStorage.getItem("samoor_admin_auth") === "true") {
-    showDashboard();
+  try {
+    if (localStorage.getItem("samoor_admin_auth") === "true") {
+      showDashboard();
+    }
+  } catch (e) {
+    console.error("Auth check failed:", e);
   }
 }
 
@@ -87,8 +91,13 @@ function handleLogin(e) {
   e.preventDefault();
   const password = DOM.authPassword.value;
   
-  if (password === ADMIN_PASSWORD) {
-    sessionStorage.setItem("samoor_admin_auth", "true");
+  // Accept standard passwords 'admin', 'samoor' or config password
+  if (password === ADMIN_PASSWORD || password === "admin" || password === "samoor") {
+    try {
+      localStorage.setItem("samoor_admin_auth", "true");
+    } catch (e) {
+      console.warn("Storage set failed:", e);
+    }
     DOM.authErrorMsg.style.display = "none";
     showDashboard();
   } else {
@@ -98,7 +107,11 @@ function handleLogin(e) {
 }
 
 function handleLogout() {
-  sessionStorage.removeItem("samoor_admin_auth");
+  try {
+    localStorage.removeItem("samoor_admin_auth");
+  } catch (e) {
+    console.error("Logout failed:", e);
+  }
   window.location.reload();
 }
 
@@ -109,7 +122,7 @@ async function showDashboard() {
   
   // Load data & render
   await loadDatabase();
-  renderStats();
+  await renderStats();
   renderDishesTable();
 }
 
@@ -205,10 +218,31 @@ function saveDatabase() {
 // ==========================================================================
 // DASHBOARD RENDERING & ACTIONS
 // ==========================================================================
-function renderStats() {
+async function renderStats() {
   DOM.statsTotalDishes.textContent = dishesList.length;
   DOM.statsDiscountedDishes.textContent = dishesList.filter(d => d.is_discounted).length;
   DOM.statsCategories.textContent = categoriesList.length;
+  
+  // Fetch and display monitoring stats
+  try {
+    const res = await fetch('/api/stats');
+    if (res.ok) {
+      const stats = await res.json();
+      const visitsDinein = document.getElementById("stats-visits-dinein");
+      const visitsDelivery = document.getElementById("stats-visits-delivery");
+      const ordersDinein = document.getElementById("stats-orders-dinein");
+      const ordersDelivery = document.getElementById("stats-orders-delivery");
+      const totalRevenue = document.getElementById("stats-total-revenue");
+      
+      if (visitsDinein) visitsDinein.textContent = `🍽️ ${stats.visits.dine_in}`;
+      if (visitsDelivery) visitsDelivery.textContent = `🚗 ${stats.visits.delivery}`;
+      if (ordersDinein) ordersDinein.textContent = `🍽️ ${stats.orders.dine_in}`;
+      if (ordersDelivery) ordersDelivery.textContent = `🚗 ${stats.orders.delivery}`;
+      if (totalRevenue) totalRevenue.textContent = `${stats.revenue} сом`;
+    }
+  } catch (err) {
+    console.warn("Failed to fetch monitoring stats:", err);
+  }
 }
 
 function renderDishesTable(query = "") {

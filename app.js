@@ -72,6 +72,16 @@ function isRestaurantOpen() {
 // ORDER SERVICE MODE MANAGEMENT
 // ==========================================================================
 function setOrderMode(mode) {
+  // If they just made the selection from the welcome overlay, log it as a visit on the server
+  const isInitialSelection = DOM.welcomeOverlay && DOM.welcomeOverlay.style.display !== "none";
+  if (isInitialSelection) {
+    fetch("/api/stats/visit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: mode })
+    }).catch(e => console.warn("Failed to log visit:", e));
+  }
+
   orderMode = mode;
   storage.setSession("samoor_order_mode", mode);
   
@@ -1511,6 +1521,7 @@ ${itemsMarkdown}
 
   const orderData = {
     orderId,
+    mode: storage.getSession("samoor_order_mode") || "delivery",
     customer: { name, phone, address, comment },
     items: cart.map(i => ({ 
       id: i.item.id, 

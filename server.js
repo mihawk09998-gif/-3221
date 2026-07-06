@@ -53,6 +53,38 @@ try {
   console.error('Error loading promos.json:', err);
 }
 
+// Load stats database
+const statsFilePath = path.join(__dirname, 'stats.json');
+let statsDb = {
+  visits: {
+    dine_in: 0,
+    delivery: 0
+  },
+  orders: {
+    dine_in: 0,
+    delivery: 0
+  },
+  revenue: 0
+};
+
+try {
+  if (fs.existsSync(statsFilePath)) {
+    statsDb = JSON.parse(fs.readFileSync(statsFilePath, 'utf-8'));
+    console.log('Stats database loaded successfully.');
+  } else {
+    console.log('No stats.json database found. Initializing empty.');
+    fs.writeFileSync(statsFilePath, JSON.stringify(statsDb, null, 2), 'utf-8');
+  }
+} catch (err) {
+  console.error('Error loading stats.json:', err);
+}
+
+function saveStatsDb() {
+  fs.writeFile(statsFilePath, JSON.stringify(statsDb, null, 2), 'utf-8', (err) => {
+    if (err) console.error('Error saving stats.json:', err);
+  });
+}
+
 // Helper to save databases
 function saveDishesDb() {
   fs.writeFile(dishesFilePath, JSON.stringify(dishesDb, null, 2), 'utf-8', (err) => {
@@ -142,6 +174,20 @@ app.post('/api/order', async (req, res) => {
     } else {
       // Order type
       const order = payload.orderData;
+      
+      // Update statistics
+      try {
+        if (order.mode === 'dine_in' || order.mode === 'dine-in') {
+          statsDb.orders.dine_in++;
+        } else {
+          statsDb.orders.delivery++;
+        }
+        statsDb.revenue += Number(order.total) || 0;
+        saveStatsDb();
+      } catch (statsErr) {
+        console.error('Failed to update stats on order:', statsErr);
+      }
+
       let itemsList = "";
       order.items.forEach((item, idx) => {
         itemsList += `${idx + 1}. *${item.name}* x${item.quantity} — ${item.price * item.quantity} сом\n`;
@@ -360,6 +406,27 @@ app.get('/api/debug-paths', (req, res) => {
     cwd: process.cwd(),
     files: getFiles(__dirname)
   });
+});
+
+// 9. MONITORING STATS ENDPOINTS
+app.post('/api/stats/visit', (req, res) => {
+  try {
+    const { mode } = req.body;
+    if (mode === 'dine_in' || mode === 'dine-in') {
+      statsDb.visits.dine_in++;
+    } else if (mode === 'delivery') {
+      statsDb.visits.delivery++;
+    }
+    saveStatsDb();
+    return res.status(200).json({ success: true, visits: statsDb.visits });
+  } catch (error) {
+    console.error('Error in POST /api/stats/visit:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/stats', (req, res) => {
+  return res.status(200).json(statsDb);
 });
 
 // START EXPRESS WEB SERVER
