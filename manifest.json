@@ -1,0 +1,22 @@
+{
+  "name": "САМОР - Доставка еды",
+  "short_name": "САМОР",
+  "description": "Электронное меню и доставка еды из ресторана САМОР в Бишкеке",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090909",
+  "theme_color": "#d4af37",
+  "icons": [
+    {
+      "src": "./images/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "./images/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

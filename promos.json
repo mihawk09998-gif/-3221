@@ -1,0 +1,4 @@
+[
+  { "code": "SAMOR10", "discount_percent": 10, "is_active": true },
+  { "code": "BIZNES", "discount_percent": 15, "is_active": true }
+]
