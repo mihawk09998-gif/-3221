@@ -100,7 +100,7 @@ function savePromosDb() {
 
 // Enable CORS and JSON parsing
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // 1. SECURITY MIDDLEWARE: Block access to backend configuration files
 app.use((req, res, next) => {
@@ -429,6 +429,51 @@ app.post('/api/stats/visit', (req, res) => {
 
 app.get('/api/stats', (req, res) => {
   return res.status(200).json(statsDb);
+});
+
+// 10. SECURE IMGBB IMAGE UPLOAD PROXY
+app.post('/api/upload', async (req, res) => {
+  try {
+    const { image } = req.body;
+    if (!image) {
+      return res.status(400).json({ error: 'Missing image field in request body.' });
+    }
+
+    const apiKey = process.env.IMGBB_API_KEY;
+    if (!apiKey) {
+      console.error('ImgBB Upload Error: IMGBB_API_KEY is not defined in environment variables.');
+      return res.status(500).json({ error: 'ImgBB API key is not configured on the server.' });
+    }
+
+    // Strip prefix if present (e.g. "data:image/jpeg;base64,")
+    let base64Data = image;
+    if (base64Data.includes(';base64,')) {
+      base64Data = base64Data.split(';base64,')[1];
+    }
+
+    const bodyParams = new URLSearchParams();
+    bodyParams.append('image', base64Data);
+
+    console.log('Forwarding image upload request to ImgBB...');
+    const imgbbRes = await fetchApi(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: 'POST',
+      body: bodyParams
+    });
+
+    const data = await imgbbRes.json();
+    
+    if (imgbbRes.ok && data && data.success && data.data && data.data.display_url) {
+      console.log('Image uploaded successfully to ImgBB:', data.data.display_url);
+      return res.status(200).json({ display_url: data.data.display_url });
+    } else {
+      const errMsg = (data && data.error && data.error.message) || 'Unknown error from ImgBB';
+      console.error('ImgBB API Failure:', errMsg);
+      return res.status(500).json({ error: errMsg });
+    }
+  } catch (error) {
+    console.error('Error in POST /api/upload proxy:', error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 // START EXPRESS WEB SERVER

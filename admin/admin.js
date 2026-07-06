@@ -12,6 +12,7 @@ const ADMIN_PASSWORD = "admin";
 let dishesList = [];
 let categoriesList = [];
 let promoCodesList = [];
+let uploadedImageUrl = "";
 
 // ==========================================================================
 // DOM ELEMENT MAPPINGS
@@ -71,7 +72,12 @@ const DOM = {
   formPromoOldCode: document.getElementById("form-promo-old-code"),
   formPromoCode: document.getElementById("form-promo-code"),
   formPromoPercent: document.getElementById("form-promo-percent"),
-  formPromoActive: document.getElementById("form-promo-active")
+  formPromoActive: document.getElementById("form-promo-active"),
+
+  // Image Upload & Preview elements
+  dishImageUpload: document.getElementById("dish-image-upload"),
+  imagePreview: document.getElementById("image-preview"),
+  imagePreviewContainer: document.getElementById("image-preview-container")
 };
 
 // ==========================================================================
@@ -341,12 +347,25 @@ function closeModal(modal) {
   DOM.discountPriceContainer.classList.remove("active");
   // Clean error styles
   document.querySelectorAll(".form-group").forEach(el => el.classList.remove("has-error"));
+
+  // Reset image upload previews
+  if (DOM.dishImageUpload) DOM.dishImageUpload.value = "";
+  if (DOM.imagePreview) DOM.imagePreview.src = "";
+  if (DOM.imagePreviewContainer) DOM.imagePreviewContainer.style.display = "none";
+  uploadedImageUrl = "";
 }
 
 function openAddModal() {
   DOM.modalTitle.textContent = "Добавить блюдо";
   DOM.formDishId.value = "";
   document.getElementById("form-submit-text").textContent = "Добавить блюдо";
+  
+  // Clear image fields
+  uploadedImageUrl = "";
+  if (DOM.dishImageUpload) DOM.dishImageUpload.value = "";
+  if (DOM.imagePreview) DOM.imagePreview.src = "";
+  if (DOM.imagePreviewContainer) DOM.imagePreviewContainer.style.display = "none";
+
   openModal(DOM.dishModal);
 }
 
@@ -371,6 +390,17 @@ function openEditModal(id) {
   } else {
     DOM.formDiscountPrice.value = "";
     DOM.discountPriceContainer.classList.remove("active");
+  }
+  
+  // Populate image preview
+  uploadedImageUrl = dish.image_url || "";
+  if (DOM.dishImageUpload) DOM.dishImageUpload.value = "";
+  if (uploadedImageUrl && DOM.imagePreview && DOM.imagePreviewContainer) {
+    DOM.imagePreview.src = uploadedImageUrl;
+    DOM.imagePreviewContainer.style.display = "block";
+  } else if (DOM.imagePreview && DOM.imagePreviewContainer) {
+    DOM.imagePreview.src = "";
+    DOM.imagePreviewContainer.style.display = "none";
   }
   
   document.getElementById("form-submit-text").textContent = "Сохранить изменения";
@@ -408,7 +438,7 @@ async function handleFormSubmit(e) {
   const category = DOM.formCategory.value;
   const portion = DOM.formPortion.value.trim();
   const description = DOM.formDescription.value.trim();
-  const image_url = DOM.formImage.value.trim() || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60";
+  const image_url = uploadedImageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60";
   const price = parseFloat(DOM.formPrice.value);
   const is_discounted = DOM.formIsDiscounted.checked;
   const discount_price = is_discounted ? parseFloat(DOM.formDiscountPrice.value) : 0;
@@ -500,6 +530,62 @@ function validateForm() {
   }
   
   return isValid;
+}
+
+async function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async function(event) {
+    const base64String = event.target.result;
+    
+    // Set button loading state
+    const submitBtn = DOM.dishForm.querySelector('button[type="submit"]');
+    const submitText = document.getElementById("form-submit-text");
+    const originalText = submitText.textContent;
+    
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = "Загрузка фото...";
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64String })
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data && data.display_url) {
+        uploadedImageUrl = data.display_url;
+        DOM.formImage.value = data.display_url;
+        DOM.imagePreview.src = data.display_url;
+        DOM.imagePreviewContainer.style.display = "block";
+        console.log("Photo uploaded successfully:", data.display_url);
+      } else {
+        throw new Error("Invalid response format from upload server");
+      }
+    } catch (err) {
+      console.error("Failed to upload image:", err);
+      alert(`Ошибка при загрузке фотографии: ${err.message}`);
+      // Clear input
+      DOM.dishImageUpload.value = "";
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitText) submitText.textContent = originalText;
+    }
+  };
+
+  reader.onerror = function(err) {
+    console.error("Error reading file:", err);
+    alert("Ошибка чтения файла");
+  };
+
+  reader.readAsDataURL(file);
 }
 
 // ==========================================================================
@@ -768,6 +854,11 @@ function setupListeners() {
   
   // Form submission CRUD dispatcher
   DOM.dishForm.addEventListener("submit", handleFormSubmit);
+
+  // Image Upload trigger
+  if (DOM.dishImageUpload) {
+    DOM.dishImageUpload.addEventListener("change", handleImageUpload);
+  }
 
   // Tab Selection Triggers
   if (DOM.tabDishes) {

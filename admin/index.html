@@ -242,8 +242,12 @@
           </div>
 
           <div class="form-group" id="group-image" style="margin-top: 12px;">
-            <label for="form-image">Ссылка на фото (Image URL)</label>
-            <input type="url" id="form-image" placeholder="https://images.unsplash.com/photo-...">
+            <label for="dish-image-upload">Фото блюда</label>
+            <input type="file" accept="image/*" id="dish-image-upload" style="display: block; margin-top: 6px; width: 100%; color: var(--text-primary);">
+            <input type="hidden" id="form-image">
+            <div id="image-preview-container" style="margin-top: 10px; display: none; text-align: center;">
+              <img id="image-preview" src="" alt="Превью" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border-light); object-fit: cover;">
+            </div>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; align-items: end;">
