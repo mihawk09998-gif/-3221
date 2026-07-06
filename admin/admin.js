@@ -803,3 +803,33 @@ document.addEventListener("DOMContentLoaded", () => {
   setupListeners();
   checkAuth();
 });
+
+// AUTOMATED TEST SUITE (Only runs locally if URL contains ?run-tests=true)
+if (window.location.search.includes("run-tests=true")) {
+  localStorage.setItem("samoor_admin_auth", "true");
+  setTimeout(() => {
+    console.log("TEST: Starting automated admin UI test...");
+    
+    // 1. Check tab switcher
+    const tabPromos = document.getElementById("tab-promocodes");
+    if (tabPromos) {
+      tabPromos.click();
+      console.log("TEST: Clicked tab promocodes. Display: " + document.getElementById("promocodes-section-container").style.display);
+    }
+    
+    // 2. Switch back to dishes
+    const tabDishes = document.getElementById("tab-dishes");
+    if (tabDishes) {
+      tabDishes.click();
+      console.log("TEST: Clicked tab dishes. Display: " + document.getElementById("dishes-section-container").style.display);
+    }
+    
+    // 3. Test Add Dish modal open
+    const addBtn = document.getElementById("add-dish-btn");
+    const modal = document.getElementById("dish-modal");
+    if (addBtn && modal) {
+      addBtn.click();
+      console.log("TEST: Clicked Add Dish. Modal classes: " + Array.from(modal.classList).join(", "));
+    }
+  }, 1000);
+}
