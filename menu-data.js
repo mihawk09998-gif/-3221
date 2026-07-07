@@ -1,1168 +1,1855 @@
 const CATEGORIES = {
   breakfasts: { id: "breakfasts", name: "Завтраки", icon: "coffee" },
   salads: { id: "salads", name: "Салаты", icon: "leaf" },
+  soups: { id: "soups", name: "Супы", icon: "soup" },
   mains: { id: "mains", name: "Вторые блюда", icon: "utensils" },
-  grill: { id: "grill", name: "Шашлык & Мангал", icon: "flame" },
-  sets: { id: "sets", name: "Сеты от шефа", icon: "star" },
-  steaks: { id: "steaks", name: "Стейки & Горячее", icon: "beef" },
-  starters: { id: "starters", name: "Закуски & Супы", icon: "soup" },
-  kids: { id: "kids", name: "Детское меню", icon: "smile" },
+  steaks: { id: "steaks", name: "Стейки", icon: "beef" },
   pizza: { id: "pizza", name: "Пицца", icon: "pizza" },
-  drinks: { id: "drinks", name: "Напитки & Кофе", icon: "glass" }
+  kids: { id: "kids", name: "Детское меню", icon: "smile" },
+  grill: { id: "grill", name: "Шашлык", icon: "flame" },
+  sets: { id: "sets", name: "Сеты", icon: "star" },
+  starters: { id: "starters", name: "Закуски", icon: "leaf" },
+  bakery: { id: "bakery", name: "Выпечка & Сладости", icon: "coffee" },
+  sides: { id: "sides", name: "Гарниры & Соусы", icon: "utensils" },
+  drinks: { id: "drinks", name: "Напитки & Чай", icon: "glass" },
+  marinades: { id: "marinades", name: "Маринады", icon: "flame" }
 };
 
 const MENU_DATA = [
-  // === ЗАВТРАКИ ===
-  {
-    id: "br-1",
-    category: "breakfasts",
-    name: "Омлет с сыром",
-    price: 290,
-    portion: "200 гр",
-    description: "Классический воздушный омлет с добавлением нежного сыра.",
-    image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-2",
-    category: "breakfasts",
-    name: "Не испанский завтрак",
-    price: 490,
-    portion: "350 гр",
-    description: "Фирменный сытный завтрак с яйцами, колбасками, тостами и гарниром.",
-    image: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-3",
-    category: "breakfasts",
-    name: "Сырники со сметаной",
-    price: 320,
-    portion: "200 гр",
-    description: "Нежные домашние сырники из свежего творога с хрустящей корочкой. Подаются со сметаной.",
-    image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-4",
-    category: "breakfasts",
-    name: "Блинчики со сметаной",
-    price: 250,
-    portion: "180 гр",
-    description: "Тонкие кружевные домашние блинчики со сметаной.",
-    image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-5",
-    category: "breakfasts",
-    name: "Блинчики с творогом",
-    price: 290,
-    portion: "220 гр",
-    description: "Аппетитные блинчики со сладкой начинкой из нежного творога.",
-    image: "https://images.unsplash.com/photo-1622484211148-716598e04041?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-6",
-    category: "breakfasts",
-    name: "Шакшука",
-    price: 390,
-    portion: "250 гр",
-    description: "Традиционная восточная яичница в остром соусе из томатов, сладкого перца, лука и специй.",
-    image: "https://images.unsplash.com/photo-1590412200988-a436bb705300?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-7",
-    category: "breakfasts",
-    name: "Английский завтрак",
-    price: 550,
-    portion: "400 гр",
-    description: "Сытный завтрак: глазунья, жареный бекон, фасоль в томате, грибы, колбаски и тосты.",
-    image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-8",
-    category: "breakfasts",
-    name: "Каша рисовая",
-    price: 220,
-    portion: "250 гр",
-    description: "Нежная молочная рисовая каша со сливочным маслом.",
-    image: "https://images.unsplash.com/photo-1517686469429-8faf88b9f7af?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-9",
-    category: "breakfasts",
-    name: "Каша овсяная",
-    price: 220,
-    portion: "250 гр",
-    description: "Полезная классическая овсяная каша на молоке с добавлением сливочного масла.",
-    image: "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-10",
-    category: "breakfasts",
-    name: "Каша из киноа",
-    price: 220,
-    portion: "250 гр",
-    description: "Суперфуд-каша из крупы киноа, приготовленная на молоке. Лёгкая и питательная.",
-    image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "br-11",
-    category: "breakfasts",
-    name: "Гранола с йогуртом",
-    price: 350,
-    portion: "200 гр",
-    description: "Запечённая хрустящая гранола со злаками, орехами, сухофруктами и натуральным йогуртом.",
-    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === САЛАТЫ ===
-  {
-    id: "sl-1",
-    category: "salads",
-    name: "Свежий салат",
-    price: 250,
-    portion: "200 гр",
-    description: "Витаминный микс из свежих сезонных овощей с заправкой на выбор.",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-2",
-    category: "salads",
-    name: "Греческий салат",
-    price: 390,
-    portion: "250 гр",
-    description: "Свежие огурцы, помидоры, перец болгарский, оливки, маслины, сыр фета, оливковое масло.",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-3",
-    category: "salads",
-    name: "Китайский салат",
-    price: 390,
-    portion: "220 гр",
-    description: "Пикантный салат со свежими овощами, древесными грибами и соевой заправкой.",
-    image: "https://images.unsplash.com/photo-1552611052-33e04de081de?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-4",
-    category: "salads",
-    name: "Древесные грибы Муэр",
-    price: 390,
-    portion: "180 гр",
-    description: "Азиатский салат из хрустящих черных древесных грибов муэр с кунжутным маслом и чесноком.",
-    image: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-5",
-    category: "salads",
-    name: "Салат с копченым лососем",
-    price: 590,
-    portion: "220 гр",
-    description: "Изысканный салат с ломтиками копченого лосося, миксом зелени и фирменным соусом.",
-    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-6",
-    category: "salads",
-    name: "Цезарь с курицей",
-    price: 450,
-    portion: "250 гр",
-    description: "Хрустящие листья салата романо, сочная куриная грудка-гриль, сухарики, сыр пармезан и соус цезарь.",
-    image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-7",
-    category: "salads",
-    name: "Нисуаз с форелью",
-    price: 690,
-    portion: "280 гр",
-    description: "Сытный салат французской кухни с нежной форелью, картофелем, яйцом пашот, фасолью и оливками.",
-    image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-8",
-    category: "salads",
-    name: "Овощной салат с авокадо",
-    price: 490,
-    portion: "240 гр",
-    description: "Здоровое сочетание спелого авокадо, огурцов, черри, листьев салата и легкой заправки.",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-9",
-    category: "salads",
-    name: "Азиатский салат",
-    price: 420,
-    portion: "210 гр",
-    description: "Пряный салат с хрустящими овощами, зеленью и восточным соусом.",
-    image: "https://images.unsplash.com/photo-1561131248-3164a6421971?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-10",
-    category: "salads",
-    name: "Аристократ",
-    price: 490,
-    portion: "230 гр",
-    description: "Изысканный салат с деликатесным мясом, сыром и авторской заправкой.",
-    image: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-11",
-    category: "salads",
-    name: "Горячая фунчоза",
-    price: 450,
-    portion: "250 гр",
-    description: "Рисовая лапша, обжаренная с соломкой из говядины и болгарского перца в соевом соусе.",
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-12",
-    category: "salads",
-    name: "Капрезе",
-    price: 490,
-    portion: "200 гр",
-    description: "Классический итальянский салат из томатов, моцареллы, базилика и соуса песто.",
-    image: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-13",
-    category: "salads",
-    name: "Хрустящие баклажаны",
-    price: 420,
-    portion: "220 гр",
-    description: "Обжаренные до хрустящей корочки баклажаны в кисло-сладком соусе со свежими помидорами и кинзой.",
-    image: "https://images.unsplash.com/photo-1625938670751-243da9999396?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sl-14",
-    category: "salads",
-    name: "Нежный краб",
-    price: 350,
-    portion: "200 гр",
-    description: "Легкий салат с крабовым мясом, кукурузой, яйцом и сливочной заправкой.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === ВТОРЫЕ БЛЮДА ===
-  {
-    id: "mn-1",
-    category: "mains",
-    name: "Куурдак из говядины",
-    price: 590,
-    portion: "350 гр",
-    description: "Традиционное жаркое из сочной говядины с луком и картофелем, обжаренное до румяной корочки.",
-    image: "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-2",
-    category: "mains",
-    name: "Куурдак из баранины",
-    price: 640,
-    portion: "350 гр",
-    description: "Аутентичный куурдак из свежей баранины на косточке с луком и золотистым картофелем.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-3",
-    category: "mains",
-    name: "Казан-кебаб с говядиной",
-    price: 690,
-    portion: "400 гр",
-    description: "Аппетитные куски говядины с запеченным картофелем, приготовленные в казане со специями.",
-    image: "https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-4",
-    category: "mains",
-    name: "Мясо с овощами",
-    price: 590,
-    portion: "320 гр",
-    description: "Ломтики говядины, тушенные с сезонными овощами и восточными специями.",
-    image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-5",
-    category: "mains",
-    name: "Мясо по-китайски",
-    price: 620,
-    portion: "300 гр",
-    description: "Обжаренная говядина в фирменном китайском соусе с перцем и древесными грибами.",
-    image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-6",
-    category: "mains",
-    name: "Телятина с картофелем",
-    price: 690,
-    portion: "380 гр",
-    description: "Нежная телятина, томленая с молодым картофелем и ароматными травами.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-7",
-    category: "mains",
-    name: "Картофель по-домашнему",
-    price: 350,
-    portion: "300 гр",
-    description: "Жареный картофель с луком, грибами и чесноком по традиционному рецепту.",
-    image: "https://images.unsplash.com/photo-1518013006365-1d4e78f7e274?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-8",
-    category: "mains",
-    name: "Босо лагман",
-    price: 390,
-    portion: "350 гр",
-    description: "Жареная домашняя лапша ручной тяжки с говядиной, овощами и специями в воке.",
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-9",
-    category: "mains",
-    name: "Гуйру лагман",
-    price: 420,
-    portion: "400 гр",
-    description: "Тянутая вручную лапша с крупно нарезанными овощами и говядиной в густом подливе.",
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-10",
-    category: "mains",
-    name: "Манты (порция)",
-    price: 390,
-    portion: "4 шт",
-    description: "Паровые манты с начинкой из рубленой говядины и лука с курдючным жиром.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-11",
-    category: "mains",
-    name: "Яичная лапша",
-    price: 350,
-    portion: "300 гр",
-    description: "Сытная лапша на яйцах с куриным филе и овощами вок.",
-    image: "https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-12",
-    category: "mains",
-    name: "Курица по-пекински",
-    price: 620,
-    portion: "350 гр",
-    description: "Кусочки куриного филе в глазури с кунжутом, перцем и оригинальным пекинским соусом.",
-    image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-13",
-    category: "mains",
-    name: "Феттучини с курицей",
-    price: 490,
-    portion: "320 гр",
-    description: "Паста феттучини с нежным куриным филе и шампиньонами в сливочном соусе с пармезаном.",
-    image: "https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-14",
-    category: "mains",
-    name: "Феттучини с семгой",
-    price: 690,
-    portion: "320 гр",
-    description: "Паста феттучини с филе красной рыбы в нежном сливочном соусе с зеленью.",
-    image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "mn-15",
-    category: "mains",
-    name: "Котлета по-киевски",
-    price: 520,
-    portion: "250 гр",
-    description: "Сочная куриная грудка в хрустящей панировке со сливочным маслом и зеленью внутри. Подается с гарниром.",
-    image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === ШАШЛЫКИ И БЛЮДА НА МАНГАЛЕ ===
-  {
-    id: "gr-1",
-    category: "grill",
-    name: "Баранина на косточках",
-    price: 690,
-    portion: "300 гр",
-    description: "Нежные ребрышки и пистолетики молодой баранины, зажаренные на углях.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-2",
-    category: "grill",
-    name: "Шашлык из говядины",
-    price: 620,
-    portion: "250 гр",
-    description: "Маринованные кусочки отборной говядины, приготовленные на мангале с луком.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-3",
-    category: "grill",
-    name: "Курица филе (шашлык)",
-    price: 450,
-    portion: "250 гр",
-    description: "Диетическое и сочное куриное филе на углях.",
-    image: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-4",
-    category: "grill",
-    name: "Курица на костях",
-    price: 420,
-    portion: "250 гр",
-    description: "Части курицы на косточке с хрустящей корочкой гриль.",
-    image: "https://images.unsplash.com/photo-1626201870407-5f57db8f081c?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-5",
-    category: "grill",
-    name: "Крылышки на мангале",
-    price: 490,
-    portion: "350 гр",
-    description: "Золотистые пикантные куриные крылышки с ароматом дыма.",
-    image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-6",
-    category: "grill",
-    name: "Оромо-кебаб",
-    price: 520,
-    portion: "250 гр",
-    description: "Крученый шашлык из мясного фарша со специями в тонкой сетке.",
-    image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-7",
-    category: "grill",
-    name: "Кебаб в лаваше",
-    price: 490,
-    portion: "250 гр",
-    description: "Люля-кебаб, завернутый в лаваш со свежей зеленью и маринованным луком.",
-    image: "https://images.unsplash.com/photo-1626700051175-6518c4793f4f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-8",
-    category: "grill",
-    name: "Кебаб в рубашке",
-    price: 590,
-    portion: "300 гр",
-    description: "Кебаб из рубленого мяса, обернутый в тонкую жировую сетку для сочности.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-9",
-    category: "grill",
-    name: "Люля-кебаб",
-    price: 490,
-    portion: "300 гр",
-    description: "Традиционный люля-кебаб из нежного фарша говядины и баранины со специями.",
-    image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-10",
-    category: "grill",
-    name: "Ассорти шашлыков",
-    price: 790,
-    portion: "400 гр",
-    description: "Микс из разных видов шашлыка: говядина, курица, люля-кебаб с овощами.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-11",
-    category: "grill",
-    name: "Утиная грудка",
-    price: 400,
-    portion: "300 гр",
-    description: "Нежная и ароматная утиная грудка, подкопченная на углях.",
-    image: "https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-12",
-    category: "grill",
-    name: "Печень в рубашке",
-    price: 490,
-    portion: "250 гр",
-    description: "Нежная говяжья печень в жировой сетке на мангале. Очень сочная.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-13",
-    category: "grill",
-    name: "Форель на углях",
-    price: 890,
-    portion: "350-400 гр",
-    description: "Речная форель целиком со специями и лимоном, запеченная на решетке.",
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-14",
-    category: "grill",
-    name: "Овощи на мангале",
-    price: 290,
-    portion: "250 гр",
-    description: "Помидоры, перец болгарский, баклажаны, запеченные с дымком.",
-    image: "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-15",
-    category: "grill",
-    name: "Картофель на мангале",
-    price: 220,
-    portion: "250 гр",
-    description: "Ломтики картофеля со специями, обжаренные на шампурах.",
-    image: "https://images.unsplash.com/photo-1518013006365-1d4e78f7e274?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-16",
-    category: "grill",
-    name: "Кукуруза на мангале",
-    price: 220,
-    portion: "1 шт",
-    description: "Сладкий початок кукурузы, обжаренный со сливочным маслом и солью на углях.",
-    image: "https://images.unsplash.com/photo-1551754625-702980ca8f6a?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "gr-17",
-    category: "grill",
-    name: "Шампиньоны на мангале",
-    price: 320,
-    portion: "200 гр",
-    description: "Крупные сочные шампиньоны со специями, запеченные на шампурах.",
-    image: "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === СЕТЫ ОТ ШЕФА ===
-  {
-    id: "st-1",
-    category: "sets",
-    name: "Сет «Малый»",
-    price: 2990,
-    portion: "1.8 кг",
-    description: "Баранина на косточках, Говядина, Курица на костях, Оромо-кебаб, Овощи на мангале, Кукуруза, Лепешки на углях, Шашлычный соус.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "st-2",
-    category: "sets",
-    name: "Сет «Солидный»",
-    price: 4990,
-    portion: "3.2 кг",
-    description: "Баранина на косточках, Говядина, Крылышки, Кебаб в рубашке, Овощи на мангале, Картофель на мангале, Утиные грудки, Лепешки на углях.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === СТЕЙКИ И ГОРЯЧЕЕ ===
-  {
-    id: "sk-1",
-    category: "steaks",
-    name: "Стейк из форели",
-    price: 890,
-    portion: "300 гр",
-    description: "Нежный стейк красной рыбы со специями и лимонным соусом.",
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-2",
-    category: "steaks",
-    name: "Стейк из семги",
-    price: 1290,
-    portion: "320 гр",
-    description: "Премиальный стейк из семги, приготовленный на гриле.",
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-3",
-    category: "steaks",
-    name: "Тибон стейк",
-    price: 1490,
-    portion: "450 гр",
-    description: "Большой стейк на Т-образной кости, сочетающий стриплойн и нежную вырезку.",
-    image: "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-4",
-    category: "steaks",
-    name: "Рибай стейк",
-    price: 1690,
-    portion: "350 гр",
-    description: "Самый сочный стейк с высокой степенью мраморности из премиальной говядины.",
-    image: "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-5",
-    category: "steaks",
-    name: "Ковбой стейк",
-    price: 1890,
-    portion: "500 гр",
-    description: "Стейк рибай на кости. Настоящий брутальный мужской стейк.",
-    image: "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-6",
-    category: "steaks",
-    name: "Жареная форель",
-    price: 790,
-    portion: "1 шт",
-    description: "Целая форель, зажаренная до хрустящей аппетитной корочки.",
-    image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-7",
-    category: "steaks",
-    name: "Курица в кисло-сладком соусе",
-    price: 510,
-    portion: "300 гр",
-    description: "Кусочки курицы, обжаренные с болгарским перцем и ананасами в пикантном соусе.",
-    image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-8",
-    category: "steaks",
-    name: "Жареный рис",
-    price: 390,
-    portion: "300 гр",
-    description: "Рассыпчатый жареный рис с овощами и яйцом в азиатском стиле.",
-    image: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-9",
-    category: "steaks",
-    name: "Медальоны из телятины",
-    price: 790,
-    portion: "300 гр",
-    description: "Нежные медальоны из телячьей вырезки под грибным или сливочным соусом.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-10",
-    category: "steaks",
-    name: "Антрекот",
-    price: 790,
-    portion: "350 гр",
-    description: "Сочный межреберный отруб говядины, обжаренный со специями.",
-    image: "https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-11",
-    category: "steaks",
-    name: "Кесадилья с курицей",
-    price: 520,
-    portion: "280 гр",
-    description: "Пшеничная тортилья с начинкой из сочного филе цыпленка, кукурузы, перца и расплавленного сыра.",
-    image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-12",
-    category: "steaks",
-    name: "Фахитос с говядиной",
-    price: 690,
-    portion: "350 гр",
-    description: "Шипящая сковорода с полосками говядины и овощей. Подается с тортильями.",
-    image: "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-13",
-    category: "steaks",
-    name: "Фрикассе с рисом",
-    price: 490,
-    portion: "320 гр",
-    description: "Рагу из курицы в нежном сливочном соусе с грибами, подается на подушке из риса.",
-    image: "https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-14",
-    category: "steaks",
-    name: "Бефстроганов с пюре",
-    price: 690,
-    portion: "350 гр",
-    description: "Классическое блюдо из тонко нарезанных кусочков говядины под сливочно-сметанным соусом с нежным пюре.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sk-15",
-    category: "steaks",
-    name: "Мясо с картофелем фри",
-    price: 530,
-    portion: "320 гр",
-    description: "Кусочки обжаренной сочной говядины с порцией хрустящего картофеля фри.",
-    image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === ЗАКУСКИ И СУПЫ ===
-  {
-    id: "sp-1",
-    category: "starters",
-    name: "Овощная нарезка",
-    price: 450,
-    portion: "300 гр",
-    description: "Свежие огурцы, помидоры, редис, зелень, болгарский перец.",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-2",
-    category: "starters",
-    name: "Мясная нарезка",
-    price: 990,
-    portion: "350 гр",
-    description: "Ассорти из благородных сортов копченого и вяленого мяса, рулетов и деликатесов.",
-    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-3",
-    category: "starters",
-    name: "Рулет из баклажанов",
-    price: 420,
-    portion: "220 гр",
-    description: "Аппетитные рулетики из обжаренных баклажанов с начинкой из сыра, чеснока и орехов.",
-    image: "https://images.unsplash.com/photo-1625938670751-243da9999396?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-4",
-    category: "starters",
-    name: "Сырная нарезка",
-    price: 990,
-    portion: "280 гр",
-    description: "Ассорти из изысканных сортов сыра с медом, орехами и виноградом.",
-    image: "https://images.unsplash.com/photo-1559561853-08026f989595?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-5",
-    category: "starters",
-    name: "Шорпо из говядины",
-    price: 320,
-    portion: "350 мл",
-    description: "Наваристый прозрачный суп с куском отборной говядины, картофелем и морковью.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-6",
-    category: "starters",
-    name: "Шорпо из баранины",
-    price: 350,
-    portion: "350 мл",
-    description: "Традиционный насыщенный бульон со свежей бараниной, крупно нарезанными овощами и специями.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-7",
-    category: "starters",
-    name: "Китайский суп",
-    price: 360,
-    portion: "350 мл",
-    description: "Пряный легкий суп с древесными грибами, лапшой, зеленью и яйцом.",
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-8",
-    category: "starters",
-    name: "Чечевичный крем-суп",
-    price: 280,
-    portion: "300 мл",
-    description: "Нежный бархатистый суп-пюре из красной чечевицы. Подается с лимоном и сухариками.",
-    image: "https://images.unsplash.com/photo-1547592165-e1d17fed6005?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-9",
-    category: "starters",
-    name: "Сливочный суп из форели",
-    price: 490,
-    portion: "350 мл",
-    description: "Сытный суп из форели, картофеля, порея и моркови на сливках.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-10",
-    category: "starters",
-    name: "Жидкий лагман",
-    price: 350,
-    portion: "450 мл",
-    description: "Национальное уйгурское блюдо с домашней лапшой, говядиной и большим количеством овощей в бульоне.",
-    image: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-11",
-    category: "starters",
-    name: "Чучбаро острое",
-    price: 450,
-    portion: "350 мл",
-    description: "Мелкие мясные пельмени в остром и наваристом бульоне с зеленью.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-12",
-    category: "starters",
-    name: "Чучук (порция)",
-    price: 350,
-    portion: "100 гр",
-    description: "Традиционная деликатесная домашняя колбаса из конины со специями.",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-13",
-    category: "starters",
-    name: "Шашлык из курицы",
-    price: 320,
-    portion: "180 гр",
-    description: "Нежные куриные шашлычки на шпажках с соусом.",
-    image: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-14",
-    category: "starters",
-    name: "Наггетсы куриные",
-    price: 290,
-    portion: "200 гр",
-    description: "Хрустящие куриные наггетсы в золотистой панировке с соусом.",
-    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-15",
-    category: "starters",
-    name: "Домашние пельмени",
-    price: 320,
-    portion: "250 гр",
-    description: "Пельмени ручной лепки с начинкой из говядины. Подаются со сметаной.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-16",
-    category: "starters",
-    name: "Перепелиный суп",
-    price: 390,
-    portion: "350 мл",
-    description: "Лёгкий и очень полезный бульон с перепелиным яйцом и нежным мясом.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-17",
-    category: "starters",
-    name: "Мампар",
-    price: 320,
-    portion: "400 мл",
-    description: "Наваристый суп с кусочками теста, мяса, болгарского перца, чеснока и яичным блином.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-18",
-    category: "starters",
-    name: "Рамен с курицей",
-    price: 420,
-    portion: "450 мл",
-    description: "Японский пшеничный суп с куриным филе, лапшой, водорослями нори и яйцом.",
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-19",
-    category: "starters",
-    name: "Рамен с говядиной",
-    price: 490,
-    portion: "450 мл",
-    description: "Сытный рамэн с ломтиками томленой говядины, маринованным яйцом и зеленью.",
-    image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "sp-20",
-    category: "starters",
-    name: "Том Ям с морепродуктами",
-    price: 690,
-    portion: "400 мл",
-    description: "Классический тайский кисло-острый суп с креветками, кальмарами, грибами и кокосовым молоком.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === ДЕТСКОЕ МЕНЮ ===
-  {
-    id: "kd-1",
-    category: "kids",
-    name: "Детские наггетсы",
-    price: 290,
-    portion: "150 гр",
-    description: "Маленькие хрустящие наггетсы для детей, подаются с кетчупом.",
-    image: "https://images.unsplash.com/photo-1562967914-608f82629710?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "kd-2",
-    category: "kids",
-    name: "Картофель фри с сосиской",
-    price: 320,
-    portion: "200 гр",
-    description: "Золотистый картофель фри с забавной фигурной сосиской.",
-    image: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "kd-3",
-    category: "kids",
-    name: "Вареники с картофелем",
-    price: 250,
-    portion: "180 гр",
-    description: "Нежные детские вареники с картофельным пюре и маслом.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "kd-4",
-    category: "kids",
-    name: "Пельмешки детские со сметаной",
-    price: 290,
-    portion: "180 гр",
-    description: "Маленькие пельмешки с фаршем из говядины и сметанным соусом.",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "kd-5",
-    category: "kids",
-    name: "Куриный супчик с лапшой",
-    price: 220,
-    portion: "250 мл",
-    description: "Легкий диетический суп с куриной грудкой и вермишелью.",
-    image: "https://images.unsplash.com/photo-1547825407-2d060104b7c8?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === ПИЦЦА ===
-  {
-    id: "pz-1",
-    category: "pizza",
-    name: "Маргарита",
-    price: 590,
-    portion: "30 см",
-    description: "Итальянская классика: томатный соус, сыр моцарелла, свежие томаты и базилик.",
-    image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-2",
-    category: "pizza",
-    name: "Пепперони",
-    price: 690,
-    portion: "30 см",
-    description: "Острая пицца с пикантной колбасой пепперони, томатным соусом и сыром моцарелла.",
-    image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-3",
-    category: "pizza",
-    name: "Пицца Чили",
-    price: 690,
-    portion: "30 см",
-    description: "Острая мясная пицца с перчиком халапеньо, говядиной и луком.",
-    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-4",
-    category: "pizza",
-    name: "Куриная пицца",
-    price: 690,
-    portion: "30 см",
-    description: "Пицца с куриным филе, шампиньонами, кукурузой и сливочным соусом.",
-    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-5",
-    category: "pizza",
-    name: "Пицца Цезарь",
-    price: 750,
-    portion: "30 см",
-    description: "Куриное филе, пармезан, помидоры черри, листья салата, соус цезарь.",
-    image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-6",
-    category: "pizza",
-    name: "Пицца Капрезе",
-    price: 750,
-    portion: "30 см",
-    description: "Сыр моцарелла, томаты, соус песто и руккола.",
-    image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-7",
-    category: "pizza",
-    name: "Пицца 4 сыра",
-    price: 790,
-    portion: "30 см",
-    description: "Изысканное сочетание сыров моцарелла, дорблю, пармезан и гауда.",
-    image: "https://images.unsplash.com/photo-1573821663912-569905455b1c?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "pz-8",
-    category: "pizza",
-    name: "Фирменная «Самоор»",
-    price: 890,
-    portion: "32 см",
-    description: "Мясное ассорти с томатами, болгарским перцем, грибами, солеными огурчиками и соусом от шефа.",
-    image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&auto=format&fit=crop&q=60"
-  },
-
-  // === НАПИТКИ И КОФЕ ===
-  {
-    id: "dr-1",
-    category: "drinks",
-    name: "Эспрессо",
-    price: 180,
-    portion: "50 мл",
-    description: "Классический крепкий кофе.",
-    image: "https://images.unsplash.com/photo-1510701115857-7f99b78a0d6a?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-2",
-    category: "drinks",
-    name: "Американо",
-    price: 180,
-    portion: "300 / 400 мл",
-    description: "Классический черный кофе средней крепости.",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-3",
-    category: "drinks",
-    name: "Кофе Латте",
-    price: 190,
-    portion: "300 / 400 мл",
-    description: "Кофейный напиток с нежной молочной пенкой.",
-    image: "https://images.unsplash.com/photo-1570968915860-54d5c301fc9f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-4",
-    category: "drinks",
-    name: "Капучино",
-    price: 210,
-    portion: "300 / 400 мл",
-    description: "Крепкий кофе с густой молочной пенкой.",
-    image: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-5",
-    category: "drinks",
-    name: "Флэт Уайт",
-    price: 220,
-    portion: "250 мл",
-    description: "Двойной эспрессо с подогретым паром молоком.",
-    image: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-6",
-    category: "drinks",
-    name: "Глинтвейн б/а",
-    price: 220,
-    portion: "300 мл",
-    description: "Согревающий напиток на основе сока со специями и фруктами.",
-    image: "https://images.unsplash.com/photo-1543254006-c6702c253520?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-7",
-    category: "drinks",
-    name: "Какао с соленой карамелью",
-    price: 240,
-    portion: "300 / 400 мл",
-    description: "Сладкий какао-напиток с карамельным сиропом и щепоткой соли.",
-    image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-8",
-    category: "drinks",
-    name: "Горячий шоколад",
-    price: 220,
-    portion: "300 мл",
-    description: "Густой согревающий напиток из натурального шоколада.",
-    image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-9",
-    category: "drinks",
-    name: "Кофе Раф",
-    price: 240,
-    portion: "300 / 400 мл",
-    description: "Нежный десертный кофе на сливках с ванильным вкусом.",
-    image: "https://images.unsplash.com/photo-1570968915860-54d5c301fc9f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-10",
-    category: "drinks",
-    name: "Айс Латте (холодный)",
-    price: 220,
-    portion: "400 мл",
-    description: "Освежающий эспрессо с холодным молоком и льдом.",
-    image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-11",
-    category: "drinks",
-    name: "Лимонад Манго-маракуйя",
-    price: 250,
-    portion: "400 мл",
-    description: "Авторский лимонад со вкусом манго и маракуйи со льдом.",
-    image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-12",
-    category: "drinks",
-    name: "Фирменный Чай «Самоор»",
-    price: 250,
-    portion: "1 л",
-    description: "Фирменный ягодный чай от заведения, подается в литровом чайнике.",
-    image: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-13",
-    category: "drinks",
-    name: "Милкшейк классический",
-    price: 250,
-    portion: "250 мл",
-    description: "Молочный коктейль с мороженым.",
-    image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-14",
-    category: "drinks",
-    name: "Максым (национальный)",
-    price: 170,
-    portion: "1 л",
-    description: "Традиционный кыргызский освежающий кислый злаковый напиток из ячменя, пшеницы и кукурузы.",
-    image: "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-15",
-    category: "drinks",
-    name: "Чалап (национальный)",
-    price: 170,
-    portion: "1 л",
-    description: "Кисломолочный освежающий напиток с добавлением минеральной воды.",
-    image: "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-16",
-    category: "drinks",
-    name: "Аралаш (национальный)",
-    price: 170,
-    portion: "1 л",
-    description: "Коктейль из смеси максыма и чалапа в пропорции 50/50.",
-    image: "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-17",
-    category: "drinks",
-    name: "Курут классический (штука)",
-    price: 120,
-    portion: "1 уп",
-    description: "Соленые высушенные шарики сузьмы (концентрированного кислого молока).",
-    image: "https://images.unsplash.com/photo-1497534446932-c925b458314e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-18",
-    category: "drinks",
-    name: "Кока Кола",
-    price: 180,
-    portion: "1 л",
-    description: "Классический газированный напиток.",
-    image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: "dr-19",
-    category: "drinks",
-    name: "Свежевыжатый сок апельсин",
-    price: 350,
-    portion: "250 мл",
-    description: "Натуральный сок холодного отжима из сочных апельсинов.",
-    image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500&auto=format&fit=crop&q=60"
+  {
+    "id": "br-1",
+    "category": "breakfasts",
+    "name": "Омлет с сыром",
+    "price": 288,
+    "portion": "",
+    "description": "Яицо кур., сливки, сыр моц., микс салат, соус лимонный",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-2",
+    "category": "breakfasts",
+    "name": "Не испанский завтрак",
+    "price": 488,
+    "portion": "",
+    "description": "Яйцо куриное, сливки, картофель, микс салат, соус лимонный, тостерный хлеб, сыр творожный, семга копченая, сыр пармезан",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-3",
+    "category": "breakfasts",
+    "name": "Сырники с йогуртом",
+    "price": 318,
+    "portion": "",
+    "description": "Творог, яйцо, сахар, мука, йогурт, вишня коктейльная",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-4",
+    "category": "breakfasts",
+    "name": "Блинчики со сметаной",
+    "price": 219,
+    "portion": "",
+    "description": "Яйцо куриное, масло растительное, молоко, мука, сметана",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-5",
+    "category": "breakfasts",
+    "name": "Блинчики с творогом",
+    "price": 288,
+    "portion": "",
+    "description": "Яйцо куриное, масло растительное, молоко, творог",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-6",
+    "category": "breakfasts",
+    "name": "Шакшука",
+    "price": 388,
+    "portion": "",
+    "description": "Помидоры, лук, перец болгарский, томатная паста, яйцо, тостерный хлеб, лук зелёный, базилик, кинза",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-7",
+    "category": "breakfasts",
+    "name": "Английский завтрак",
+    "price": 478,
+    "portion": "",
+    "description": "Яйцо куриное, сосиски «Тойбосс», микс салат, соус лимонный, огурец, корнишоны, тостерный хлеб, кетчуп, кукуруза консервированная",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-8",
+    "category": "breakfasts",
+    "name": "Каша рисовая",
+    "price": 218,
+    "portion": "",
+    "description": "Рис, молоко, масло сливочное, сахар, гранола",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-9",
+    "category": "breakfasts",
+    "name": "Каша овсяная",
+    "price": 218,
+    "portion": "",
+    "description": "Овсянка, масло сливочное, молоко, гранола",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-10",
+    "category": "breakfasts",
+    "name": "Каша из киноа",
+    "price": 218,
+    "portion": "",
+    "description": "Киноа, масло сливочное, молоко, гранола",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "br-11",
+    "category": "breakfasts",
+    "name": "Гранола с йогуртом",
+    "price": 348,
+    "portion": "",
+    "description": "Йогурт, гранола из тыквенных семечек и овсянки, банан, вишня коктейльная",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-12",
+    "category": "salads",
+    "name": "Свежий салат",
+    "price": 248,
+    "portion": "",
+    "description": "Салат микс, огурцы, помидоры, лук репчатый, масло растительное",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-13",
+    "category": "salads",
+    "name": "Греческий салат",
+    "price": 388,
+    "portion": "",
+    "description": "Микс салат, огурцы, помидоры, перец болгарский, лук красный, оливки, маслины, сыр «Фетакса», орегано, фирменный соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-14",
+    "category": "salads",
+    "name": "Китайский салат",
+    "price": 388,
+    "portion": "",
+    "description": "Говядина, лук, перец полугорький, огурцы, помидоры, кунжут, масло растительное, соевый соус, чеснок, кинза",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-15",
+    "category": "salads",
+    "name": "Муэр",
+    "price": 388,
+    "portion": "",
+    "description": "Грибы шиитаки, древесные грибы, огурцы, помидоры, лук, соевый соус, фирменный острый соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-16",
+    "category": "salads",
+    "name": "Салат с копчёной сёмгой",
+    "price": 588,
+    "portion": "",
+    "description": "Микс салат, руккола, перец болгарский, соус «Цезарь», картофель, черри, яйцо перепелиное, сыр моцарелла, сёмга копчёная, лимонный соус, бальзамический крем",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-17",
+    "category": "salads",
+    "name": "Цезарь с курицей",
+    "price": 448,
+    "portion": "",
+    "description": "Соус «Цезарь», айсберг, куриное филе, пармезан, яйцо перепелиное, сухари, черри",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-18",
+    "category": "salads",
+    "name": "Нисуаз с форелью",
+    "price": 588,
+    "portion": "",
+    "description": "Микс салат, стейк форели, маслины, оливки, перец болгарский, лук красный, черри, яйцо перепелиное, яйцо пашот, соус лимонный",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-19",
+    "category": "salads",
+    "name": "Овощной салат с авокадо",
+    "price": 488,
+    "portion": "",
+    "description": "Микс салат, брокколи, цветная капуста, перец болгарский, огурцы, черри, авокадо, соус винегрет",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-20",
+    "category": "salads",
+    "name": "Азиатский салат",
+    "price": 418,
+    "portion": "",
+    "description": "Перец болгарский, огурцы, помидоры, говядина, лук репчатый, опята, соевый соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-21",
+    "category": "salads",
+    "name": "Аристократ",
+    "price": 488,
+    "portion": "",
+    "description": "Огурцы, Черри, Лук красный, Микс салат,Болгарский перец, Грейпфрут,Фисташки, Сыр творожный, Соус фирменный",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-22",
+    "category": "salads",
+    "name": "Майо",
+    "price": 418,
+    "portion": "",
+    "description": "Сыр голландский, яйцо варёное, вешенки, огурцы свежие, огурцы маринованные, куриная грудка,майонез, пармезан",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-23",
+    "category": "salads",
+    "name": "Хрустящий баклажан",
+    "price": 418,
+    "portion": "",
+    "description": "Баклажан, черри, кинза, кисло-сладкий соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-24",
+    "category": "salads",
+    "name": "Нежный краб",
+    "price": 348,
+    "portion": "",
+    "description": "Крабовые палочки, белокочанная капуста, куриное яйцо, майонез, кукуруза",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-25",
+    "category": "salads",
+    "name": "Горячая фунчоза",
+    "price": 448,
+    "portion": "",
+    "description": "Фунчоза, болгарский перец, чеснок, говядина, репчатый лук, зелёный лук, соевый соус, перец чили",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sa-26",
+    "category": "salads",
+    "name": "Капрезе",
+    "price": 488,
+    "portion": "",
+    "description": "Сыр моцарелла, помидоры, соус песто, руккола, фирменный соус, кедровый орех, бальзамический крем",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-27",
+    "category": "soups",
+    "name": "Перепелиный суп",
+    "price": 388,
+    "portion": "",
+    "description": "Говядина, картофель, морковь, помидоры черри, перепелиное яйцо, бульон",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-28",
+    "category": "soups",
+    "name": "Чечевичный крем-суп",
+    "price": 288,
+    "portion": "",
+    "description": "Томатная паста, чечевица, репчатый лук, морковь, сливки, лимон, сухарики, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-29",
+    "category": "soups",
+    "name": "Мампар",
+    "price": 318,
+    "portion": "",
+    "description": "Тесто, говядина, репчатый лук, болгарский перец, зелень, томатная паста, бульон, морковь",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-30",
+    "category": "soups",
+    "name": "Шорпо из говядины",
+    "price": 328,
+    "portion": "",
+    "description": "Говядина, картофель, лук, болгарский перец, морковь, укроп, бульон.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-31",
+    "category": "soups",
+    "name": "Шорпо из баранины",
+    "price": 338,
+    "portion": "",
+    "description": "Баранина, картофель, лук, морковь, укроп, бульон.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-32",
+    "category": "soups",
+    "name": "Китайский суп",
+    "price": 358,
+    "portion": "",
+    "description": "Говядина, чеснок, грибы шитаки, имбирь, чили, фунчоза.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-33",
+    "category": "soups",
+    "name": "Сливочный суп с форелью",
+    "price": 448,
+    "portion": "",
+    "description": "Форель, виола, сливки, черри, укроп, картофель, морковь.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-34",
+    "category": "soups",
+    "name": "Чучбара острая",
+    "price": 448,
+    "portion": "",
+    "description": "Говядина, полугорький перец, лук, морковь, томатная паста, кинза, чеснок, фунчоза.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-35",
+    "category": "soups",
+    "name": "Жидкий лагман",
+    "price": 350,
+    "portion": "450 мл",
+    "description": "Лапша, болгарский перец, лук, басай, говядина,сельдерей,растительное масло, бульон,лапиза,чеснок.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-36",
+    "category": "soups",
+    "name": "Пельмени",
+    "price": 318,
+    "portion": "",
+    "description": "Говядина , Лук репчатый , тесто , бульон , Сметана , укроп",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "so-37",
+    "category": "soups",
+    "name": "Том Ям с морепродуктами",
+    "price": 690,
+    "portion": "400 мл",
+    "description": "Мидии, креветки, семга, форель, паста Том Ям, лайм, кокосовое молоко, рис, вода, лемонграсс, листья лайма, болгарский перец, репчатый лук, шампиньоны",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-38",
+    "category": "mains",
+    "name": "Мясо с овощами",
+    "price": 488,
+    "portion": "",
+    "description": "Говядина, брюссельская капуста , болгарский перец, помидоры, огурцы, репчатый лук, соевый соус, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-39",
+    "category": "mains",
+    "name": "Куурдак из говядины",
+    "price": 568,
+    "portion": "",
+    "description": "Говядина, репчатый лук, картофель, соевый соус, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-40",
+    "category": "mains",
+    "name": "Куурдак из баранины",
+    "price": 618,
+    "portion": "",
+    "description": "Баранина, картофель, репчатый лук, соевый соус, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-41",
+    "category": "mains",
+    "name": "Картофель по-домашнему",
+    "price": 348,
+    "portion": "",
+    "description": "Картофель, говядина, репчатый лук",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-42",
+    "category": "mains",
+    "name": "Казан-кебаб с говядиной",
+    "price": 518,
+    "portion": "",
+    "description": "Говядина, рис, репчатый лук, соевый соус, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-43",
+    "category": "mains",
+    "name": "Мясо по-китайски",
+    "price": 538,
+    "portion": "",
+    "description": "Говядина, репчатый лук, полугорький перец, огурцы, соевый соус, острый соус, рис",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-44",
+    "category": "mains",
+    "name": "Босо лагман",
+    "price": 388,
+    "portion": "",
+    "description": "Говядина, болгарский перец, репчатый лук, басай,сельдерей,чинсай, лапша, соевый соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-45",
+    "category": "mains",
+    "name": "Медальоны",
+    "price": 788,
+    "portion": "",
+    "description": "Бон филе,шампиньоны,шпинат ,кабачки, соус «Деми-глас», помидоры черри",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-46",
+    "category": "mains",
+    "name": "Телятина с картофелем",
+    "price": 588,
+    "portion": "",
+    "description": "Говядина, репчатый лук, помидоры, огурцы, болгарский перец, картофель, помидоры черри,соевый соус",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-47",
+    "category": "mains",
+    "name": "Котлета по-киевски",
+    "price": 478,
+    "portion": "",
+    "description": "Куриное филе, куриный окорочок, яйцо, сливочное масло, укроп, картофельное пюре, сливочный соус, помидоры черри",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-48",
+    "category": "mains",
+    "name": "Эскимо",
+    "price": 438,
+    "portion": "",
+    "description": "Куриное филе, куриный окорочок, репчатый лук, яйцо, сливочный соус, помидоры черри, картофельное пюре.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-49",
+    "category": "mains",
+    "name": "Фрикасе с рисом",
+    "price": 448,
+    "portion": "",
+    "description": "Куриное филе, вешенки, кукуруза, репчатый лук, сливки, рис, помидоры черри.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-50",
+    "category": "mains",
+    "name": "Бефстроганов с пюре",
+    "price": 528,
+    "portion": "",
+    "description": "Говядина, репчатый лук, шампиньоны, корнишоны, сливки, помидоры черри, картофельное пюре.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-51",
+    "category": "mains",
+    "name": "Мясо с фри",
+    "price": 518,
+    "portion": "",
+    "description": "Картофель фри, говядина, репчатый лук, болгарский перец, лапша.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-52",
+    "category": "mains",
+    "name": "Фахитос с говядиной",
+    "price": 628,
+    "portion": "",
+    "description": "Говядина, репчатый лук, болгарский перец, чеснок, помидоры черри, острый соус,пико де гайо,соевый соус,лаваш.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-53",
+    "category": "mains",
+    "name": "Курица в кисло-сладком соусе",
+    "price": 428,
+    "portion": "",
+    "description": "Куриное филе, помидоры черри, кисло-сладкий соус, рис, зелёный лук, чили",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-54",
+    "category": "mains",
+    "name": "Форель жаренный",
+    "price": 788,
+    "portion": "",
+    "description": "Форель, микс салат, помидоры черри, лимонный соус, лимон.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-55",
+    "category": "mains",
+    "name": "Жареный рис",
+    "price": 288,
+    "portion": "",
+    "description": "Куриное филе, зелёный лук, репчатый лук, болгарский перец, соевый соус.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-56",
+    "category": "mains",
+    "name": "Антрекот от шефа",
+    "price": 828,
+    "portion": "",
+    "description": "Антрекот, кабачки, баклажан, помидоры черри, шампиньоны.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-57",
+    "category": "mains",
+    "name": "Кесадилья",
+    "price": 380,
+    "portion": "",
+    "description": "Тортилья, курица, репчатый лук, шампиньоны, сыр моцарелла, соус «Сладкий чили», соус «Пико Де гайо».",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-58",
+    "category": "mains",
+    "name": "Манты с мясом",
+    "price": 388,
+    "portion": "говядина , репчатый лук, жир , специи, красный соус, тесто",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ma-59",
+    "category": "mains",
+    "name": "Манты 1 шт",
+    "price": 78,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "st-60",
+    "category": "steaks",
+    "name": "Стейк из форели",
+    "price": 890,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "st-61",
+    "category": "steaks",
+    "name": "Стейк из семги",
+    "price": 1290,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "st-62",
+    "category": "steaks",
+    "name": "Тибон стейк",
+    "price": 1690,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "st-63",
+    "category": "steaks",
+    "name": "Рибай стейк",
+    "price": 1690,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "st-64",
+    "category": "steaks",
+    "name": "Ковбой стейк",
+    "price": 1890,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-65",
+    "category": "pizza",
+    "name": "4 Сыра",
+    "price": 768,
+    "portion": "",
+    "description": "Чеддер, сыр сулугуни, сыр моцарелла, пармезан, тесто",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-66",
+    "category": "pizza",
+    "name": "Цезарь",
+    "price": 748,
+    "portion": "",
+    "description": "Курица, соус «Цезарь», айсберг, пармезан, сливки, сыр моцарелла, сыр сулугуни, помидоры черри, тесто",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-67",
+    "category": "pizza",
+    "name": "Капрезе",
+    "price": 748,
+    "portion": "",
+    "description": "Помидоры черри, тесто, соус песто, руккола, сыр моцарелла, сыр сулугуни, моцарелла в рассоле, сливки",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-68",
+    "category": "pizza",
+    "name": "Фирменная «Самоор»",
+    "price": 888,
+    "portion": "",
+    "description": "Тесто, грибы, колбаса, маслины, курица, болгарский перец, сыр моцарелла, сыр сулугуни, соус пицца.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-69",
+    "category": "pizza",
+    "name": "Маргарита",
+    "price": 528,
+    "portion": "",
+    "description": "Помидоры, соус пицца, сыр сулугуни, сыр моцарелла",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-70",
+    "category": "pizza",
+    "name": "Пепперони",
+    "price": 688,
+    "portion": "",
+    "description": "Тесто, соус «Пицца», пепперони, сыр сулугуни, сыр моцарелла",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-71",
+    "category": "pizza",
+    "name": "Чили",
+    "price": 718,
+    "portion": "",
+    "description": "Тесто, чили фарш, соус «Пицца», халапеньо, сыр сулугуни, сыр моцарелла",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "pi-72",
+    "category": "pizza",
+    "name": "Куриная",
+    "price": 688,
+    "portion": "",
+    "description": "Тесто, сливки, шампиньоны, курица, сыр сулугуни, сыр моцарелла",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ki-73",
+    "category": "kids",
+    "name": "Наггетсы",
+    "price": 318,
+    "portion": "",
+    "description": "Наггетсы, картофель фри, кетчуп.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ki-74",
+    "category": "kids",
+    "name": "Картофель фри с сосиской",
+    "price": 318,
+    "portion": "",
+    "description": "Сосиски «Тойбосс», картофель фри, кетчуп.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ki-75",
+    "category": "kids",
+    "name": "Вареники",
+    "price": 258,
+    "portion": "",
+    "description": "Тесто, картофель, репчатый лук, сметана.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ki-76",
+    "category": "kids",
+    "name": "Пельмени со сметаной",
+    "price": 283,
+    "portion": "",
+    "description": "Тесто, говядина, репчатый лук, сметана.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ki-77",
+    "category": "kids",
+    "name": "Куриный суп",
+    "price": 228,
+    "portion": "",
+    "description": "Курица, бульон, макароны, куриное филе, морковь.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-78",
+    "category": "grill",
+    "name": "Баранина на косточках",
+    "price": 600,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-79",
+    "category": "grill",
+    "name": "Говядина",
+    "price": 600,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-80",
+    "category": "grill",
+    "name": "Курица филе",
+    "price": 490,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-81",
+    "category": "grill",
+    "name": "Курица на костях",
+    "price": 450,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-82",
+    "category": "grill",
+    "name": "Крылышки",
+    "price": 450,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-83",
+    "category": "grill",
+    "name": "Оромо кебаб",
+    "price": 450,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-84",
+    "category": "grill",
+    "name": "Кебаб в лаваше",
+    "price": 420,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-85",
+    "category": "grill",
+    "name": "Кебаб в рубашке",
+    "price": 500,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-86",
+    "category": "grill",
+    "name": "Люля-кебаб",
+    "price": 410,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-87",
+    "category": "grill",
+    "name": "Ассорти шашлыков",
+    "price": 650,
+    "portion": "лепёшка 2 кусочка, соус",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-88",
+    "category": "grill",
+    "name": "Утиная грудка",
+    "price": 390,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-89",
+    "category": "grill",
+    "name": "Печень в рубашке",
+    "price": 400,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-90",
+    "category": "grill",
+    "name": "Печень обычная",
+    "price": 350,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-91",
+    "category": "grill",
+    "name": "Форель на мангале",
+    "price": 1490,
+    "portion": "целиком",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-92",
+    "category": "grill",
+    "name": "Мякоть баранины",
+    "price": 650,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-93",
+    "category": "grill",
+    "name": "Антрекот",
+    "price": 650,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-94",
+    "category": "grill",
+    "name": "Семечки",
+    "price": 600,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-95",
+    "category": "grill",
+    "name": "Фирменный шашлык «Самоор»",
+    "price": 700,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-96",
+    "category": "grill",
+    "name": "Овощи на мангале",
+    "price": 360,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-97",
+    "category": "grill",
+    "name": "Картофель на мангале",
+    "price": 220,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-98",
+    "category": "grill",
+    "name": "Кукуруза на мангале",
+    "price": 220,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-99",
+    "category": "grill",
+    "name": "Шампиньоны на мангале",
+    "price": 300,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-100",
+    "category": "grill",
+    "name": "Лепёшка на углях",
+    "price": 100,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-101",
+    "category": "grill",
+    "name": "Шашлычный соус",
+    "price": 80,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "gr-102",
+    "category": "grill",
+    "name": "Свежий лук",
+    "price": 30,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-103",
+    "category": "sets",
+    "name": "Баранина на косточках",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-104",
+    "category": "sets",
+    "name": "Говядина",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-105",
+    "category": "sets",
+    "name": "Курица на костях",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-106",
+    "category": "sets",
+    "name": "Оромо-кебаб",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-107",
+    "category": "sets",
+    "name": "Люля-кебаб",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-108",
+    "category": "sets",
+    "name": "Кукуруза на мангале",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-109",
+    "category": "sets",
+    "name": "Картофель на мангале",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-110",
+    "category": "sets",
+    "name": "Лепёшка на углях",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-111",
+    "category": "sets",
+    "name": "Шашлычный соус",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-112",
+    "category": "sets",
+    "name": "Цена",
+    "price": 3490,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-113",
+    "category": "sets",
+    "name": "Баранина на косточках",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-114",
+    "category": "sets",
+    "name": "Говядина",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-115",
+    "category": "sets",
+    "name": "Крылышки",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-116",
+    "category": "sets",
+    "name": "Кебаб в рубашке",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-117",
+    "category": "sets",
+    "name": "Утиная грудка",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-118",
+    "category": "sets",
+    "name": "Печень в рубашке",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-119",
+    "category": "sets",
+    "name": "Овощи на мангале",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-120",
+    "category": "sets",
+    "name": "Картофель на мангале",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-121",
+    "category": "sets",
+    "name": "Шампиньоны на мангале",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-122",
+    "category": "sets",
+    "name": "Лепёшка на углях",
+    "price": 1,
+    "portion": "целая",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-123",
+    "category": "sets",
+    "name": "Шашлычный соус",
+    "price": 1,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-124",
+    "category": "sets",
+    "name": "Цена",
+    "price": 4300,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "se-125",
+    "category": "sets",
+    "name": "Сет на компанию \"Куурдак из Баранины\"",
+    "price": 3698,
+    "portion": "",
+    "description": "Баранина, картофель, репчатый лук, соевый соус, растительное масло",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-126",
+    "category": "starters",
+    "name": "Цезарь ролл",
+    "price": 328,
+    "portion": "",
+    "description": "Тортилья, курица, айсберг, помидоры, соус «Цезарь»",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-127",
+    "category": "starters",
+    "name": "Клаб-сэндвич",
+    "price": 388,
+    "portion": "",
+    "description": "Тостерный хлеб, курица копчёная, салатный лист, огурцы, помидоры, соус от шефа, картофель фри, кетчуп.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-128",
+    "category": "starters",
+    "name": "Сырные палочки",
+    "price": 228,
+    "portion": "",
+    "description": "Голландский сыр, соус «Тар-тар».",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-129",
+    "category": "starters",
+    "name": "Рулет из баклажанов",
+    "price": 498,
+    "portion": "",
+    "description": "Говядина, болгарский перец, репчатый лук, кабачки, чеснок, сыр брынза,горчица зернистая, майонез.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-130",
+    "category": "starters",
+    "name": "Овощная нарезка",
+    "price": 498,
+    "portion": "",
+    "description": "Огурцы, помидоры, репчатый лук, зелёный лук, кинза, болгарский перец,салат лист, сыр брынза.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-131",
+    "category": "starters",
+    "name": "Сырная нарезка",
+    "price": 888,
+    "portion": "",
+    "description": "Голландский сыр, сыр брынза, сыр сулугуни, сыр моцарелла, грецкий орех, мёд.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "sta-132",
+    "category": "starters",
+    "name": "Мясная нарезка",
+    "price": 988,
+    "portion": "",
+    "description": "Чучук, жая, копчёная куриная грудка, копчёный куриный рулет.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ba-133",
+    "category": "bakery",
+    "name": "Чак-чак",
+    "price": 228,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ba-134",
+    "category": "bakery",
+    "name": "Талкан",
+    "price": 188,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ba-135",
+    "category": "bakery",
+    "name": "Боорсок с каймаком",
+    "price": 258,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "ba-136",
+    "category": "bakery",
+    "name": "Нан",
+    "price": 58,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-137",
+    "category": "sides",
+    "name": "Картофельное пюре",
+    "price": 180,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-138",
+    "category": "sides",
+    "name": "Картофель фри",
+    "price": 220,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-139",
+    "category": "sides",
+    "name": "Картофель по-деревенски",
+    "price": 250,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-140",
+    "category": "sides",
+    "name": "Крокеты",
+    "price": 250,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-141",
+    "category": "sides",
+    "name": "Сливочный",
+    "price": 88,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-142",
+    "category": "sides",
+    "name": "Сырный",
+    "price": 88,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-143",
+    "category": "sides",
+    "name": "Тартар",
+    "price": 88,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-144",
+    "category": "sides",
+    "name": "Чесночный",
+    "price": 88,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-145",
+    "category": "sides",
+    "name": "Майонез",
+    "price": 58,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-146",
+    "category": "sides",
+    "name": "Кетчуп",
+    "price": 48,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-147",
+    "category": "sides",
+    "name": "Халапеньо",
+    "price": 88,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-148",
+    "category": "sides",
+    "name": "Каймак домашний",
+    "price": 99,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-149",
+    "category": "sides",
+    "name": "Сметана",
+    "price": 48,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "si-150",
+    "category": "sides",
+    "name": "Лазы",
+    "price": 38,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-151",
+    "category": "drinks",
+    "name": "Зеленый чай",
+    "price": 180,
+    "portion": "800 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-152",
+    "category": "drinks",
+    "name": "Черный чай",
+    "price": 180,
+    "portion": "800 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-153",
+    "category": "drinks",
+    "name": "Ароматный чай",
+    "price": 268,
+    "portion": "800 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-154",
+    "category": "drinks",
+    "name": "Ягодный",
+    "price": 348,
+    "portion": "800 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-155",
+    "category": "drinks",
+    "name": "Эспрессо",
+    "price": 118,
+    "portion": "35 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-156",
+    "category": "drinks",
+    "name": "Американо",
+    "price": 148,
+    "portion": "150 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-157",
+    "category": "drinks",
+    "name": "Капучино",
+    "price": 218,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-158",
+    "category": "drinks",
+    "name": "Латте",
+    "price": 238,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-159",
+    "category": "drinks",
+    "name": "Раф",
+    "price": 278,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-160",
+    "category": "drinks",
+    "name": "Мокко",
+    "price": 278,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-161",
+    "category": "drinks",
+    "name": "Айс Бамбл",
+    "price": 318,
+    "portion": "эспрессо, вода, мед, лед",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-162",
+    "category": "drinks",
+    "name": "Айс Латте",
+    "price": 308,
+    "portion": "эспрессо, молоко, лед",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-163",
+    "category": "drinks",
+    "name": "Эспрессо-тоник",
+    "price": 248,
+    "portion": "",
+    "description": "эспрессо, тоник",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-164",
+    "category": "drinks",
+    "name": "Малина -тоник",
+    "price": 248,
+    "portion": "эспрессо, лед, сок малины",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-165",
+    "category": "drinks",
+    "name": "Сок «Самоор»",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-166",
+    "category": "drinks",
+    "name": "Лимонад «Самоор»",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-167",
+    "category": "drinks",
+    "name": "Компот «Самоор»",
+    "price": 178,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-168",
+    "category": "drinks",
+    "name": "Шоты «Самоор»",
+    "price": 248,
+    "portion": "200 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-169",
+    "category": "drinks",
+    "name": "Манго–маракуйя",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-170",
+    "category": "drinks",
+    "name": "Ягодный",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-171",
+    "category": "drinks",
+    "name": "Апельсиновый",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-172",
+    "category": "drinks",
+    "name": "Киви–апельсин",
+    "price": 248,
+    "portion": "400 мл / 1 л",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-173",
+    "category": "drinks",
+    "name": "Ягодный",
+    "price": 308,
+    "portion": "300 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-174",
+    "category": "drinks",
+    "name": "Орео",
+    "price": 318,
+    "portion": "300 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-175",
+    "category": "drinks",
+    "name": "Банановый",
+    "price": 278,
+    "portion": "300 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-176",
+    "category": "drinks",
+    "name": "Классический",
+    "price": 248,
+    "portion": "300 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-177",
+    "category": "drinks",
+    "name": "Молочный коктейль",
+    "price": 248,
+    "portion": "300 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-178",
+    "category": "drinks",
+    "name": "Цитрусовый",
+    "price": 238,
+    "portion": "200 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-179",
+    "category": "drinks",
+    "name": "Мохито",
+    "price": 238,
+    "portion": "200 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-180",
+    "category": "drinks",
+    "name": "Имбирный",
+    "price": 268,
+    "portion": "200 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-181",
+    "category": "drinks",
+    "name": "Клубничный",
+    "price": 248,
+    "portion": "200 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-182",
+    "category": "drinks",
+    "name": "Легенда 1 л",
+    "price": 98,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-183",
+    "category": "drinks",
+    "name": "Байтик",
+    "price": 118,
+    "portion": "",
+    "description": "газ.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-184",
+    "category": "drinks",
+    "name": "Кола 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-185",
+    "category": "drinks",
+    "name": "Кола стекло",
+    "price": 158,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-186",
+    "category": "drinks",
+    "name": "Фанта 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-187",
+    "category": "drinks",
+    "name": "Спрайт 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-188",
+    "category": "drinks",
+    "name": "Schweppes 1 л",
+    "price": 278,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-189",
+    "category": "drinks",
+    "name": "Айран 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-190",
+    "category": "drinks",
+    "name": "Максым 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-191",
+    "category": "drinks",
+    "name": "Чалап 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-192",
+    "category": "drinks",
+    "name": "Бозо облепиха 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-193",
+    "category": "drinks",
+    "name": "Жарма 1 л",
+    "price": 178,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-194",
+    "category": "drinks",
+    "name": "Апельсиновый",
+    "price": 348,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-195",
+    "category": "drinks",
+    "name": "Яблочный",
+    "price": 298,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "dr-196",
+    "category": "drinks",
+    "name": "Морковный",
+    "price": 248,
+    "portion": "250 мл",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-197",
+    "category": "marinades",
+    "name": "Баранина на косточках",
+    "price": 1500,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-198",
+    "category": "marinades",
+    "name": "Говядина",
+    "price": 1600,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-199",
+    "category": "marinades",
+    "name": "Мякоть баранины",
+    "price": 1600,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-200",
+    "category": "marinades",
+    "name": "Куриное филе",
+    "price": 1960,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-201",
+    "category": "marinades",
+    "name": "Курица на костях",
+    "price": 1400,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-202",
+    "category": "marinades",
+    "name": "Кебаб",
+    "price": 1300,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-203",
+    "category": "marinades",
+    "name": "Крылышки",
+    "price": 1450,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    "id": "mar-204",
+    "category": "marinades",
+    "name": "Утиные грудки",
+    "price": 1200,
+    "portion": "",
+    "description": "",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60"
   }
 ];
