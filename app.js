@@ -50,6 +50,17 @@ let orderMode = ""; // "dine_in" or "delivery"
 let communicationPreference = "call"; // "call" or "chat"
 let paymentMethod = "cash"; // "cash", "card", or "online"
 let activePromo = null; // will store { code: "SAMOR10", discount_percent: 10 }
+let currentLang = "en";
+
+function formatPrice(price) {
+  const num = parseFloat(price);
+  if (isNaN(num)) return price;
+  if (currentLang === "en") {
+    return `$${num.toFixed(2)}`;
+  } else {
+    return `${Math.round(num)} сом`;
+  }
+}
 
 // Telegram Bot Settings (loaded securely from config.js)
 let tgConfig = {
@@ -88,7 +99,7 @@ function setOrderMode(mode) {
   if (mode === "dine_in") {
     document.body.classList.add("dine-in-mode");
     if (DOM.modeHeaderIcon) DOM.modeHeaderIcon.textContent = "🍽️";
-    if (DOM.modeHeaderText) DOM.modeHeaderText.textContent = "В ресторане";
+    if (DOM.modeHeaderText) DOM.modeHeaderText.textContent = currentLang === "en" ? "In restaurant" : "В ресторане";
     if (DOM.waiterCallBtn) DOM.waiterCallBtn.style.display = "flex";
     
     // Clear cart automatically for dine-in mode (for checkout safety)
@@ -398,8 +409,13 @@ const DOM = {
   supportMessage: document.getElementById("support-message"),
   supportPhone: document.getElementById("support-phone"),
 
-  // Welcome Overlay & Mode Selector
+  // Welcome Overlay & Language Selector
   welcomeOverlay: document.getElementById("welcome-overlay"),
+  welcomeStepLang: document.getElementById("welcome-step-lang"),
+  welcomeStepMode: document.getElementById("welcome-step-mode"),
+  btnWelcomeRu: document.getElementById("btn-welcome-ru"),
+  btnWelcomeEn: document.getElementById("btn-welcome-en"),
+  btnWelcomeBack: document.getElementById("btn-welcome-back"),
   btnModeDineIn: document.getElementById("btn-mode-dine-in"),
   btnModeDelivery: document.getElementById("btn-mode-delivery"),
   modeHeaderBtn: document.getElementById("mode-switcher-header-btn"),
@@ -461,7 +477,7 @@ function renderCategories() {
       <rect x="14" y="14" width="7" height="7"></rect>
       <rect x="3" y="14" width="7" height="7"></rect>
     </svg>
-    <span>Все</span>
+    <span>${currentLang === "en" ? "All" : "Все"}</span>
   `;
   allBtn.addEventListener("click", (e) => {
     const targetBtn = e.target.closest(".category-btn");
@@ -484,7 +500,7 @@ function renderCategories() {
     // Icon selection helper
     let iconSvg = getCategoryIconSvg(category.icon);
     
-    btn.innerHTML = `${iconSvg} <span>${category.name}</span>`;
+    btn.innerHTML = `${iconSvg} <span>${getCategoryName(category.id, currentLang)}</span>`;
     
     btn.addEventListener("click", (e) => {
       const targetBtn = e.target.closest(".category-btn");
@@ -534,8 +550,8 @@ function renderDishes() {
     DOM.dishesGrid.innerHTML = `
       <div class="no-results">
         <i class="fa-solid fa-magnifying-glass" style="font-size: 36px; color: var(--text-muted); margin-bottom: 12px; display: block; text-align: center; width: 100%;"></i>
-        <h3>Ничего не найдено</h3>
-        <p>Попробуйте изменить поисковый запрос</p>
+        <h3>${currentLang === "en" ? "No results found" : "Ничего не найдено"}</h3>
+        <p>${currentLang === "en" ? "Try changing your search query" : "Попробуйте изменить поисковый запрос"}</p>
       </div>
     `;
     return;
@@ -551,26 +567,43 @@ function renderDishes() {
     card.style.animationDelay = `${index * 0.03}s`;
     
     const inCart = getCartItem(dish.id);
-    const buttonText = inCart ? `В корзине (${inCart.quantity})` : 'Добавить';
+    const buttonText = inCart ? (currentLang === "en" ? `In Cart (${inCart.quantity})` : `В корзине (${inCart.quantity})`) : (currentLang === "en" ? 'Add' : 'Добавить');
     const buttonClass = inCart ? 'add-to-cart-btn added' : 'add-to-cart-btn';
     
+    // Translation and USD price calculation
+    let displayName = dish.name;
+    let displayDesc = dish.description || "";
+    let displayPortion = dish.portion || "";
+    let displayPrice = dish.price;
+    let displayDiscountPrice = dish.discount_price || 0;
+
+    if (currentLang === "en") {
+      displayName = translateDishName(dish.name);
+      displayDesc = translateIngredients(dish.description || "");
+      displayPortion = translatePortion(dish.portion || "");
+      displayPrice = parseFloat(((dish.price * 1.20) / 89).toFixed(2));
+      if (dish.is_discounted) {
+        displayDiscountPrice = parseFloat(((dish.discount_price * 1.20) / 89).toFixed(2));
+      }
+    }
+
     // Price rendering with discount support
     let priceHtml = "";
     if (dish.is_discounted) {
       priceHtml = `
-        <span class="dish-price-old">${dish.price} ${CONFIG.currencySymbol}</span>
-        <span class="dish-price-discount">${dish.discount_price} ${CONFIG.currencySymbol}</span>
+        <span class="dish-price-old">${formatPrice(displayPrice)}</span>
+        <span class="dish-price-discount">${formatPrice(displayDiscountPrice)}</span>
       `;
     } else {
-      priceHtml = `<span class="dish-price">${dish.price} ${CONFIG.currencySymbol}</span>`;
+      priceHtml = `<span class="dish-price">${formatPrice(displayPrice)}</span>`;
     }
     
-    const promoBadge = dish.is_discounted ? `<span class="promo-badge">% Акция</span>` : '';
+    const promoBadge = dish.is_discounted ? `<span class="promo-badge">${currentLang === "en" ? "% Promo" : "% Акция"}</span>` : '';
     
     // Render property badges alongside portion size
     const portionBadge = `
       <div class="dish-badges-left">
-        <span class="dish-portion" style="position:static;">${dish.portion}</span>
+        <span class="dish-portion" style="position:static;">${displayPortion}</span>
         ${dish.is_spicy ? '<span class="property-badge spicy" title="Острое">🌶️</span>' : ''}
         ${dish.is_veg ? '<span class="property-badge veg" title="Вегетарианское">🌱</span>' : ''}
       </div>
@@ -578,7 +611,7 @@ function renderDishes() {
 
     card.innerHTML = `
       <div class="dish-img-container">
-        <img src="${dish.image_url}" alt="${dish.name}" loading="lazy" onerror="handleImageError(this)">
+        <img src="${dish.image_url}" alt="${displayName}" loading="lazy" onerror="handleImageError(this)">
         ${portionBadge}
         ${promoBadge}
         <div class="price-container-badge">
@@ -586,8 +619,8 @@ function renderDishes() {
         </div>
       </div>
       <div class="dish-details">
-        <h3>${dish.name}</h3>
-        <p>${dish.description || ''}</p>
+        <h3>${displayName}</h3>
+        <p>${displayDesc || ''}</p>
         <button class="${buttonClass}" data-id="${dish.id}" id="add-btn-${dish.id}">
           <i class="fa-solid fa-plus" style="margin-right: 6px;"></i>
           <span class="btn-text">${buttonText}</span>
@@ -625,31 +658,36 @@ function renderCart() {
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        <h3>Ваша корзина пуста</h3>
-        <p>Выберите блюда из меню, чтобы оформить заказ</p>
+        <h3>${currentLang === "en" ? "Your cart is empty" : "Ваша корзина пуста"}</h3>
+        <p>${currentLang === "en" ? "Select dishes from the menu to place an order" : "Выберите блюда из меню, чтобы оформить заказ"}</p>
       </div>
     `;
-    DOM.cartFooterPanel.style.display = "none";
+    
+    // Hide footer panel
+    if (DOM.cartFooterPanel) DOM.cartFooterPanel.style.display = "none";
+    if (DOM.mobileActionBar) DOM.mobileActionBar.classList.remove("visible");
     DOM.cartCounter.textContent = "0";
     DOM.cartCounter.style.transform = "scale(0)";
-    
-    // Mobile bottom bar total update
-    DOM.mobileCartCount.textContent = "0";
-    DOM.mobileCartTotal.textContent = `0 ${CONFIG.currencySymbol}`;
-    DOM.mobileActionBar.style.transform = "translateY(100%)";
-    DOM.mobileActionBar.classList.remove("visible");
     return;
   }
   
-  DOM.cartFooterPanel.style.display = "block";
+  if (DOM.cartFooterPanel) DOM.cartFooterPanel.style.display = "block";
   
   let subtotal = 0;
   let totalItemsCount = 0;
   
   cart.forEach(cartItem => {
     const dish = cartItem.item;
-    const itemPrice = dish.is_discounted ? dish.discount_price : dish.price;
-    const itemTotal = itemPrice * cartItem.quantity;
+    let displayName = dish.name;
+    let displayPortion = dish.portion || "";
+    let itemPrice = dish.is_discounted ? dish.discount_price : dish.price;
+
+    if (currentLang === "en") {
+      displayName = translateDishName(dish.name);
+      displayPortion = translatePortion(dish.portion || "");
+      itemPrice = parseFloat(((itemPrice * 1.20) / 89).toFixed(2));
+    }
+    const itemTotal = parseFloat((itemPrice * cartItem.quantity).toFixed(2));
     subtotal += itemTotal;
     totalItemsCount += cartItem.quantity;
     
@@ -657,31 +695,34 @@ function renderCart() {
     itemEl.className = "cart-item";
     itemEl.id = `cart-item-${dish.id}`;
     
+    const displayOldPrice = currentLang === "en" ? parseFloat(((dish.price * 1.20) / 89).toFixed(2)) : dish.price;
+    const oldPriceHtml = dish.is_discounted ? `<span class="cart-price-old" style="font-size: 0.8rem; text-decoration: line-through; color: var(--text-muted);">${formatPrice(displayOldPrice * cartItem.quantity)}</span>` : '';
+
     itemEl.innerHTML = `
       <div class="cart-item-img">
-        <img src="${dish.image_url}" alt="${dish.name}" onerror="handleImageError(this)">
+        <img src="${dish.image_url}" alt="${displayName}" onerror="handleImageError(this)">
       </div>
       <div class="cart-item-info">
         <div>
-          <div class="cart-item-title">${dish.name}</div>
-          <div class="cart-item-portion">${dish.portion}</div>
+          <div class="cart-item-title">${displayName}</div>
+          <div class="cart-item-portion">${displayPortion}</div>
         </div>
         <div class="cart-item-actions">
           <div class="quantity-control">
-            <button class="qty-btn btn-qty-minus" aria-label="Уменьшить">
+            <button class="qty-btn btn-qty-minus" aria-label="${currentLang === "en" ? "Decrease" : "Уменьшить"}">
               <i class="fa-solid fa-minus" style="font-size: 10px;"></i>
             </button>
             <div class="qty-number">${cartItem.quantity}</div>
-            <button class="qty-btn btn-qty-plus" aria-label="Увеличить">
+            <button class="qty-btn btn-qty-plus" aria-label="${currentLang === "en" ? "Increase" : "Увеличить"}">
               <i class="fa-solid fa-plus" style="font-size: 10px;"></i>
             </button>
           </div>
           <div style="display: flex; align-items: center; gap: 14px;">
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-              ${dish.is_discounted ? `<span class="cart-price-old" style="font-size: 0.8rem; text-decoration: line-through; color: var(--text-muted);">${dish.price * cartItem.quantity} сом</span>` : ''}
-              <span class="cart-item-price" style="font-weight: 700; color: ${dish.is_discounted ? 'var(--accent-gold)' : 'var(--text-primary)'};">${itemTotal} ${CONFIG.currencySymbol}</span>
+              ${oldPriceHtml}
+              <span class="cart-item-price" style="font-weight: 700; color: ${dish.is_discounted ? 'var(--accent-gold)' : 'var(--text-primary)'};">${formatPrice(itemTotal)}</span>
             </div>
-            <button class="remove-item-btn btn-remove" aria-label="Удалить">
+            <button class="remove-item-btn btn-remove" aria-label="${currentLang === "en" ? "Remove" : "Удалить"}">
               <i class="fa-solid fa-trash-can"></i>
             </button>
           </div>
@@ -709,32 +750,37 @@ function renderCart() {
   // Recalculate subtotal with promocode discount if applied
   let promoDiscount = 0;
   if (activePromo) {
-    promoDiscount = Math.round(subtotal * (activePromo.discount_percent / 100));
+    promoDiscount = parseFloat((subtotal * (activePromo.discount_percent / 100)).toFixed(2));
   }
   
   const discountedSubtotal = subtotal - promoDiscount;
-
+  
   // Calculate delivery (using subtotal *before* promocode discount, matching standard commercial practices)
-  const isFreeDelivery = subtotal >= CONFIG.freeDeliveryThreshold;
-  const deliveryCost = isFreeDelivery ? 0 : CONFIG.deliveryPrice;
+  const isFreeDelivery = subtotal >= (currentLang === "en" ? parseFloat(((CONFIG.freeDeliveryThreshold * 1.20) / 89).toFixed(2)) : CONFIG.freeDeliveryThreshold);
+  const rawDeliveryCost = currentLang === "en" ? parseFloat(((CONFIG.deliveryPrice * 1.20) / 89).toFixed(2)) : CONFIG.deliveryPrice;
+  const deliveryCost = isFreeDelivery ? 0 : rawDeliveryCost;
   const grandTotal = discountedSubtotal + deliveryCost;
   
-  DOM.subtotalPrice.textContent = `${subtotal} ${CONFIG.currencySymbol}`;
+  DOM.subtotalPrice.textContent = formatPrice(subtotal);
   
   if (promoDiscount > 0) {
     if (DOM.rowPromoDiscount) DOM.rowPromoDiscount.style.display = "flex";
-    if (DOM.summaryPromoDiscount) DOM.summaryPromoDiscount.textContent = `-${promoDiscount} сом`;
+    if (DOM.summaryPromoDiscount) DOM.summaryPromoDiscount.textContent = `-${formatPrice(promoDiscount)}`;
   } else {
     if (DOM.rowPromoDiscount) DOM.rowPromoDiscount.style.display = "none";
   }
 
+  const freeThresholdDisplay = currentLang === "en" ? `$${parseFloat(((CONFIG.freeDeliveryThreshold * 1.20) / 89).toFixed(2))}` : `${CONFIG.freeDeliveryThreshold} сом`;
+  const freeText = currentLang === "en" ? "free" : "бесплатно";
+  const overText = currentLang === "en" ? "over" : "от";
+
   if (isFreeDelivery) {
-    DOM.deliveryPrice.innerHTML = `<span class="delivery-badge free">Бесплатно</span>`;
+    DOM.deliveryPrice.innerHTML = `<span class="delivery-badge free">${currentLang === "en" ? "Free" : "Бесплатно"}</span>`;
   } else {
-    DOM.deliveryPrice.innerHTML = `${deliveryCost} ${CONFIG.currencySymbol} <span class="delivery-badge">(от ${CONFIG.freeDeliveryThreshold} сом бесплатно)</span>`;
+    DOM.deliveryPrice.innerHTML = `${formatPrice(deliveryCost)} <span class="delivery-badge">(${overText} ${freeThresholdDisplay} ${freeText})</span>`;
   }
   
-  DOM.totalPrice.textContent = `${grandTotal} ${CONFIG.currencySymbol}`;
+  DOM.totalPrice.textContent = formatPrice(grandTotal);
   
   // Badge Counter Animation
   DOM.cartCounter.textContent = totalItemsCount;
@@ -742,7 +788,7 @@ function renderCart() {
   
   // Mobile Action Bar
   DOM.mobileCartCount.textContent = totalItemsCount;
-  DOM.mobileCartTotal.textContent = `${grandTotal} ${CONFIG.currencySymbol}`;
+  DOM.mobileCartTotal.textContent = formatPrice(grandTotal);
   DOM.mobileActionBar.style.transform = "translateY(0)";
   DOM.mobileActionBar.classList.add("visible");
 
@@ -1099,17 +1145,94 @@ function setupEventListeners() {
     });
   }
 
-  // Welcome Mode Screen Listeners
+  // Welcome sequential overlay navigation flow
+  let tempLang = "ru";
+
+  if (DOM.btnWelcomeRu) {
+    DOM.btnWelcomeRu.addEventListener("click", () => {
+      tempLang = "ru";
+      // Update Step 2 labels to Russian
+      const modeTitle = document.getElementById("welcome-mode-title");
+      const modeSubtitle = document.getElementById("welcome-mode-subtitle");
+      const dineInTitle = document.getElementById("btn-text-dine-in-title");
+      const dineInDesc = document.getElementById("btn-text-dine-in-desc");
+      const deliveryTitle = document.getElementById("btn-text-delivery-title");
+      const deliveryDesc = document.getElementById("btn-text-delivery-desc");
+      const backBtnText = document.getElementById("btn-welcome-back");
+
+      if (modeTitle) modeTitle.textContent = "Выберите режим";
+      if (modeSubtitle) modeSubtitle.textContent = "Выберите удобный режим обслуживания";
+      if (dineInTitle) dineInTitle.textContent = "Я в ресторане";
+      if (dineInDesc) dineInDesc.textContent = "Электронное меню для просмотра блюд за столиком";
+      if (deliveryTitle) deliveryTitle.textContent = "Доставка еды";
+      if (deliveryDesc) deliveryDesc.textContent = "Заказ еды на дом или в офис в городе Каракол";
+      if (backBtnText) backBtnText.textContent = "← Назад / Back";
+
+      // Toggle step cards
+      if (DOM.welcomeStepLang) DOM.welcomeStepLang.style.display = "none";
+      if (DOM.welcomeStepMode) DOM.welcomeStepMode.style.display = "flex";
+    });
+  }
+
+  if (DOM.btnWelcomeEn) {
+    DOM.btnWelcomeEn.addEventListener("click", () => {
+      tempLang = "en";
+      // Update Step 2 labels to English
+      const modeTitle = document.getElementById("welcome-mode-title");
+      const modeSubtitle = document.getElementById("welcome-mode-subtitle");
+      const dineInTitle = document.getElementById("btn-text-dine-in-title");
+      const dineInDesc = document.getElementById("btn-text-dine-in-desc");
+      const deliveryTitle = document.getElementById("btn-text-delivery-title");
+      const deliveryDesc = document.getElementById("btn-text-delivery-desc");
+      const backBtnText = document.getElementById("btn-welcome-back");
+
+      if (modeTitle) modeTitle.textContent = "Select Service Mode";
+      if (modeSubtitle) modeSubtitle.textContent = "Choose your preferred service mode";
+      if (dineInTitle) dineInTitle.textContent = "Dine-in";
+      if (dineInDesc) dineInDesc.textContent = "Electronic menu for table service";
+      if (deliveryTitle) deliveryTitle.textContent = "Food Delivery";
+      if (deliveryDesc) deliveryDesc.textContent = "Order food to your home or office in Karakol";
+      if (backBtnText) backBtnText.textContent = "← Back / Назад";
+
+      // Toggle step cards
+      if (DOM.welcomeStepLang) DOM.welcomeStepLang.style.display = "none";
+      if (DOM.welcomeStepMode) DOM.welcomeStepMode.style.display = "flex";
+    });
+  }
+
+  if (DOM.btnWelcomeBack) {
+    DOM.btnWelcomeBack.addEventListener("click", () => {
+      // Toggle back to Language Selection
+      if (DOM.welcomeStepMode) DOM.welcomeStepMode.style.display = "none";
+      if (DOM.welcomeStepLang) DOM.welcomeStepLang.style.display = "flex";
+    });
+  }
+
+  // Service Mode selections
   if (DOM.btnModeDineIn) {
-    DOM.btnModeDineIn.addEventListener("click", () => setOrderMode("dine_in"));
+    DOM.btnModeDineIn.addEventListener("click", () => {
+      setLanguage(tempLang);
+      setOrderMode("dine_in");
+      if (DOM.welcomeOverlay) DOM.welcomeOverlay.style.display = "none";
+      document.body.classList.remove("auth-locked");
+    });
   }
+
   if (DOM.btnModeDelivery) {
-    DOM.btnModeDelivery.addEventListener("click", () => setOrderMode("delivery"));
+    DOM.btnModeDelivery.addEventListener("click", () => {
+      setLanguage(tempLang);
+      setOrderMode("delivery");
+      if (DOM.welcomeOverlay) DOM.welcomeOverlay.style.display = "none";
+      document.body.classList.remove("auth-locked");
+    });
   }
+
   if (DOM.modeHeaderBtn) {
     DOM.modeHeaderBtn.addEventListener("click", () => {
       if (DOM.welcomeOverlay) {
         DOM.welcomeOverlay.style.display = "flex";
+        if (DOM.welcomeStepLang) DOM.welcomeStepLang.style.display = "flex";
+        if (DOM.welcomeStepMode) DOM.welcomeStepMode.style.display = "none";
       }
       document.body.classList.add("auth-locked");
     });
@@ -1337,19 +1460,26 @@ function openVerificationModal() {
   DOM.verifItemsList.innerHTML = "";
   DOM.verifDetailsList.innerHTML = "";
   
+  const isEn = currentLang === "en";
+  
   // Render items in verification dialog
   let subtotal = 0;
   cart.forEach(cartItem => {
-    const itemPrice = cartItem.item.is_discounted ? cartItem.item.discount_price : cartItem.item.price;
-    const itemTotal = itemPrice * cartItem.quantity;
+    let itemPrice = cartItem.item.is_discounted ? cartItem.item.discount_price : cartItem.item.price;
+    if (isEn) {
+      itemPrice = parseFloat(((itemPrice * 1.20) / 89).toFixed(2));
+    }
+    const itemTotal = parseFloat((itemPrice * cartItem.quantity).toFixed(2));
     subtotal += itemTotal;
+    
+    const displayName = isEn ? translateDishName(cartItem.item.name) : cartItem.item.name;
     
     const row = document.createElement("div");
     row.className = "verif-item";
     row.innerHTML = `
-      <span class="verif-item-name">${cartItem.item.name}</span>
+      <span class="verif-item-name">${displayName}</span>
       <span class="verif-item-qty">x${cartItem.quantity}</span>
-      <span class="verif-item-price">${itemTotal} ${CONFIG.currencySymbol}</span>
+      <span class="verif-item-price">${formatPrice(itemTotal)}</span>
     `;
     DOM.verifItemsList.appendChild(row);
   });
@@ -1357,11 +1487,12 @@ function openVerificationModal() {
   // Append delivery and grand total to verification list
   let promoDiscount = 0;
   if (activePromo) {
-    promoDiscount = Math.round(subtotal * (activePromo.discount_percent / 100));
+    promoDiscount = parseFloat((subtotal * (activePromo.discount_percent / 100)).toFixed(2));
   }
   const discountedSubtotal = subtotal - promoDiscount;
-  const isFreeDelivery = subtotal >= CONFIG.freeDeliveryThreshold;
-  const deliveryCost = isFreeDelivery ? 0 : CONFIG.deliveryPrice;
+  const isFreeDelivery = subtotal >= (isEn ? parseFloat(((CONFIG.freeDeliveryThreshold * 1.20) / 89).toFixed(2)) : CONFIG.freeDeliveryThreshold);
+  const rawDeliveryCost = isEn ? parseFloat(((CONFIG.deliveryPrice * 1.20) / 89).toFixed(2)) : CONFIG.deliveryPrice;
+  const deliveryCost = isFreeDelivery ? 0 : rawDeliveryCost;
   const grandTotal = discountedSubtotal + deliveryCost;
   
   const deliveryRow = document.createElement("div");
@@ -1369,10 +1500,13 @@ function openVerificationModal() {
   deliveryRow.style.color = "var(--text-secondary)";
   deliveryRow.style.borderTop = "1px solid rgba(255,255,255,0.05)";
   deliveryRow.style.paddingTop = "12px";
+  
+  const freeBadge = isEn ? 'Free' : 'Бесплатно';
+  const deliveryText = isEn ? 'Delivery:' : 'Доставка:';
   deliveryRow.innerHTML = `
-    <span class="verif-item-name">Доставка:</span>
+    <span class="verif-item-name">${deliveryText}</span>
     <span class="verif-item-qty"></span>
-    <span class="verif-item-price">${isFreeDelivery ? 'Бесплатно' : deliveryCost + ' сом'}</span>
+    <span class="verif-item-price">${isFreeDelivery ? freeBadge : formatPrice(deliveryCost)}</span>
   `;
   DOM.verifItemsList.appendChild(deliveryRow);
 
@@ -1380,10 +1514,11 @@ function openVerificationModal() {
     const promoRow = document.createElement("div");
     promoRow.className = "verif-item";
     promoRow.style.color = "#27ae60";
+    const discountText = isEn ? `Discount (promo ${activePromo.code}):` : `Скидка (промокод ${activePromo.code}):`;
     promoRow.innerHTML = `
-      <span class="verif-item-name">Скидка (промокод ${activePromo.code}):</span>
+      <span class="verif-item-name">${discountText}</span>
       <span class="verif-item-qty"></span>
-      <span class="verif-item-price">-${promoDiscount} сом</span>
+      <span class="verif-item-price">-${formatPrice(promoDiscount)}</span>
     `;
     DOM.verifItemsList.appendChild(promoRow);
   }
@@ -1392,10 +1527,11 @@ function openVerificationModal() {
   totalRow.className = "verif-item";
   totalRow.style.fontWeight = "800";
   totalRow.style.color = "var(--accent-gold)";
+  const totalText = isEn ? 'Total to pay:' : 'Итого к оплате:';
   totalRow.innerHTML = `
-    <span class="verif-item-name">Итого к оплате:</span>
+    <span class="verif-item-name">${totalText}</span>
     <span class="verif-item-qty"></span>
-    <span class="verif-item-price" style="font-size: 1.1rem;">${grandTotal} ${CONFIG.currencySymbol}</span>
+    <span class="verif-item-price" style="font-size: 1.1rem;">${formatPrice(grandTotal)}</span>
   `;
   DOM.verifItemsList.appendChild(totalRow);
   
@@ -1405,43 +1541,52 @@ function openVerificationModal() {
   const address = DOM.checkoutAddress.value.trim();
   const comment = DOM.checkoutComment.value.trim();
   
-  const prefText = communicationPreference === "call" ? "Позвонить мне" : "Только написать";
+  let prefText = "";
+  if (isEn) {
+    prefText = communicationPreference === "call" ? "Call me" : "Write only";
+  } else {
+    prefText = communicationPreference === "call" ? "Позвонить мне" : "Только написать";
+  }
   
   let payText = "";
   if (paymentMethod === "cash") {
     const isNoChange = DOM.checkoutNoChange && DOM.checkoutNoChange.checked;
     const changeAmt = DOM.checkoutChange.value.trim();
-    payText = `Наличными (${isNoChange ? 'Без сдачи' : 'Сдача с ' + changeAmt + ' сом'})`;
+    if (isEn) {
+      payText = `Cash (${isNoChange ? 'No change needed' : 'Change from ' + formatPrice(changeAmt)})`;
+    } else {
+      payText = `Наличными (${isNoChange ? 'Без сдачи' : 'Сдача с ' + formatPrice(changeAmt)})`;
+    }
   } else if (paymentMethod === "card") {
-    payText = "Картой курьеру";
+    payText = isEn ? "Card to courier" : "Картой курьеру";
   } else {
-    payText = "Оплата по QR коду";
+    payText = isEn ? "QR Code Payment" : "Оплата по QR коду";
   }
 
   DOM.verifDetailsList.innerHTML = `
     <div class="verif-detail-row">
-      <span>Клиент:</span>
+      <span>${isEn ? 'Customer:' : 'Клиент:'}</span>
       <span>${name}</span>
     </div>
     <div class="verif-detail-row">
-      <span>Телефон:</span>
+      <span>${isEn ? 'Phone:' : 'Телефон:'}</span>
       <span>${phone}</span>
     </div>
     <div class="verif-detail-row">
-      <span>Адрес:</span>
+      <span>${isEn ? 'Address:' : 'Адрес:'}</span>
       <span>${address}</span>
     </div>
     <div class="verif-detail-row">
-      <span>Связь:</span>
+      <span>${isEn ? 'Contact:' : 'Связь:'}</span>
       <span>${prefText}</span>
     </div>
     <div class="verif-detail-row">
-      <span>Оплата:</span>
+      <span>${isEn ? 'Payment:' : 'Оплата:'}</span>
       <span>${payText}</span>
     </div>
     ${comment ? `
     <div class="verif-detail-row">
-      <span>Инфо:</span>
+      <span>${isEn ? 'Info:' : 'Инфо:'}</span>
       <span>${comment}</span>
     </div>
     ` : ''}
@@ -1484,21 +1629,25 @@ async function handleConfirmOrder() {
   let itemsPlaintext = "";
   
   cart.forEach((cartItem, idx) => {
-    const itemPrice = cartItem.item.is_discounted ? cartItem.item.discount_price : cartItem.item.price;
-    const itemTotal = itemPrice * cartItem.quantity;
+    let itemPrice = cartItem.item.is_discounted ? cartItem.item.discount_price : cartItem.item.price;
+    if (currentLang === "en") {
+      itemPrice = parseFloat(((itemPrice * 1.20) / 89).toFixed(2));
+    }
+    const itemTotal = parseFloat((itemPrice * cartItem.quantity).toFixed(2));
     subtotal += itemTotal;
     
-    itemsMarkdown += `${idx + 1}. *${cartItem.item.name}* x${cartItem.quantity} — ${itemTotal} сом${cartItem.item.is_discounted ? ' (акция)' : ''}\n`;
-    itemsPlaintext += `${idx + 1}. ${cartItem.item.name} x${cartItem.quantity} - ${itemTotal} сом\n`;
+    itemsMarkdown += `${idx + 1}. *${cartItem.item.name}* x${cartItem.quantity} — ${formatPrice(itemTotal)}${cartItem.item.is_discounted ? ' (акция)' : ''}\n`;
+    itemsPlaintext += `${idx + 1}. ${cartItem.item.name} x${cartItem.quantity} - ${formatPrice(itemTotal)}\n`;
   });
   
   let promoDiscount = 0;
   if (activePromo) {
-    promoDiscount = Math.round(subtotal * (activePromo.discount_percent / 100));
+    promoDiscount = parseFloat((subtotal * (activePromo.discount_percent / 100)).toFixed(2));
   }
   const discountedSubtotal = subtotal - promoDiscount;
-  const isFreeDelivery = subtotal >= CONFIG.freeDeliveryThreshold;
-  const deliveryCost = isFreeDelivery ? 0 : CONFIG.deliveryPrice;
+  const isFreeDelivery = subtotal >= (currentLang === "en" ? parseFloat(((CONFIG.freeDeliveryThreshold * 1.20) / 89).toFixed(2)) : CONFIG.freeDeliveryThreshold);
+  const rawDeliveryCost = currentLang === "en" ? parseFloat(((CONFIG.deliveryPrice * 1.20) / 89).toFixed(2)) : CONFIG.deliveryPrice;
+  const deliveryCost = isFreeDelivery ? 0 : rawDeliveryCost;
   const grandTotal = discountedSubtotal + deliveryCost;
   
   const prefText = communicationPreference === "call" ? "Позвонить мне" : "Только написать";
@@ -1509,7 +1658,7 @@ async function handleConfirmOrder() {
   if (paymentMethod === "cash") {
     isNoChange = DOM.checkoutNoChange && DOM.checkoutNoChange.checked;
     changeAmount = isNoChange ? 0 : parseFloat(DOM.checkoutChange.value.trim());
-    payText = `Наличными (${isNoChange ? 'Без сдачи' : 'Сдача с ' + changeAmount + ' сом'})`;
+    payText = `Наличными (${isNoChange ? 'Без сдачи' : 'Сдача с ' + formatPrice(changeAmount)})`;
   } else if (paymentMethod === "card") {
     payText = "Картой курьеру";
   } else {
@@ -1525,28 +1674,35 @@ async function handleConfirmOrder() {
 📍 *Адрес:* ${address}
 📞 *Связь:* ${prefText}
 💳 *Оплата:* ${payText}
-${activePromo ? `🎟️ *Промокод:* ${activePromo.code} (-${promoDiscount} сом)\n` : ''}
+${activePromo ? `🎟️ *Промокод:* ${activePromo.code} (-${formatPrice(promoDiscount)})\n` : ''}
 ${comment ? `💬 *Комментарий:* ${comment}\n` : ''}
 📦 *Блюда:*
 ${itemsMarkdown}
-🚗 *Доставка:* ${isFreeDelivery ? 'Бесплатно' : deliveryCost + ' сом'}
-💰 *Итого к оплате:* *${grandTotal} сом*`;
+🚗 *Доставка:* ${isFreeDelivery ? 'Бесплатно' : formatPrice(deliveryCost)}
+💰 *Итого к оплате:* *${formatPrice(grandTotal)}*`;
 
   const orderData = {
     orderId,
     mode: storage.getSession("samoor_order_mode") || "delivery",
     customer: { name, phone, address, comment },
-    items: cart.map(i => ({ 
-      id: i.item.id, 
-      name: i.item.name, 
-      quantity: i.quantity, 
-      price: i.item.is_discounted ? i.item.discount_price : i.item.price 
-    })),
+    items: cart.map(i => {
+      let price = i.item.is_discounted ? i.item.discount_price : i.item.price;
+      if (currentLang === "en") {
+        price = parseFloat(((price * 1.20) / 89).toFixed(2));
+      }
+      return {
+        id: i.item.id, 
+        name: i.item.name, 
+        quantity: i.quantity, 
+        price: price
+      };
+    }),
     subtotal,
     promo_discount: promoDiscount,
     promo_code: activePromo ? activePromo.code : null,
     delivery: deliveryCost,
     total: grandTotal,
+    currency: currentLang === "en" ? "USD" : "KGS",
     payment: {
       method: paymentMethod,
       no_change: isNoChange,
@@ -1704,39 +1860,613 @@ async function init() {
   }
   updateThemeLogos(savedTheme);
 
-  // Load Dishes database from localStorage
-  await loadDishes();
+  // Set up Event Listeners (Do this first so welcome screen buttons are responsive instantly)
+  setupEventListeners();
+
+  // Scroll Effect for Header
+  window.addEventListener("scroll", handleHeaderScroll);
 
   // Load Cart from localStorage
   loadCart();
   
-  // Check Service Mode on load (session-based)
+  // Check if they have a saved session preference
+  const savedLang = storage.get("samoor_lang") || "ru";
   const savedMode = storage.getSession("samoor_order_mode");
+
   if (savedMode) {
+    // Already has session mode selection, load directly
+    setLanguage(savedLang);
     setOrderMode(savedMode);
+    if (DOM.welcomeOverlay) DOM.welcomeOverlay.style.display = "none";
+    document.body.classList.remove("auth-locked");
   } else {
-    // Show Welcome Screen and lock body scroll
+    // New visitor: show welcome overlay language selection (Step 1)
+    setLanguage(savedLang); // Default to ru or saved preference
     if (DOM.welcomeOverlay) {
       DOM.welcomeOverlay.style.display = "flex";
+      if (DOM.welcomeStepLang) DOM.welcomeStepLang.style.display = "flex";
+      if (DOM.welcomeStepMode) DOM.welcomeStepMode.style.display = "none";
     }
     document.body.classList.add("auth-locked");
   }
-  
-  // Scroll Effect for Header
-  window.addEventListener("scroll", handleHeaderScroll);
-  
-  // Render Categories
-  renderCategories();
-  
-  // Render Dishes
-  renderDishes();
-  
-  // Set up Event Listeners
-  setupEventListeners();
-  
-  // Settings trigger auto-hide removed
+
+  // Load Dishes database in the background (prevent blocking UI thread)
+  loadDishes().then(() => {
+    renderCategories();
+    renderDishes();
+    console.log("Dishes database successfully loaded and rendered.");
+  }).catch(err => {
+    console.error("Error loading dishes database:", err);
+  });
   
   console.log("Samoor application successfully initialized.");
+}
+
+
+
+
+function setLanguage(lang) {
+  currentLang = lang;
+  storage.setSession("samoor_lang", lang);
+  localStorage.setItem("samoor_lang", lang);
+  
+  if (lang === "en") {
+    CONFIG.currencySymbol = "$";
+  } else {
+    CONFIG.currencySymbol = "сом";
+  }
+  
+  // Translate static UI elements
+  translatePageUI(lang);
+  
+  // Re-render components with translated content
+  renderCategories();
+  renderDishes();
+  renderCart();
+}
+
+function getCategoryName(categoryKey, lang) {
+  const translations = {
+    ru: {
+      breakfasts: "Завтраки",
+      salads: "Салаты",
+      soups: "Супы",
+      mains: "Вторые блюда",
+      steaks: "Стейки",
+      pizza: "Пицца",
+      kids: "Детское меню",
+      grill: "Шашлык",
+      sets: "Сеты",
+      starters: "Закуски",
+      bakery: "Выпечка & Сладости",
+      sides: "Гарниры & Соусы",
+      drinks: "Напитки & Чай",
+      marinades: "Маринады"
+    },
+    en: {
+      breakfasts: "Breakfasts",
+      salads: "Salads",
+      soups: "Soups",
+      mains: "Main Dishes",
+      steaks: "Steaks",
+      pizza: "Pizza",
+      kids: "Kids Menu",
+      grill: "Kebab & Grill",
+      sets: "Sets & Combos",
+      starters: "Appetizers",
+      bakery: "Bakery & Sweets",
+      sides: "Sides & Sauces",
+      drinks: "Drinks & Tea",
+      marinades: "Marinated Meats"
+    }
+  };
+  return translations[lang][categoryKey] || categoryKey;
+}
+
+function translateDishName(name) {
+  if (!name) return "";
+  name = String(name);
+  const dictionary = {
+    "Омлет с сыром": "Cheese Omelette",
+    "Не испанский завтрак": "Not Spanish Breakfast",
+    "Сырники с йогуртом": "Syrniki with Yogurt",
+    "Блинчики со сметаной": "Pancakes with Sour Cream",
+    "Блинчики с творогом": "Pancakes with Cottage Cheese",
+    "Шакшука": "Shakshuka",
+    "Английский завтрак": "English Breakfast",
+    "Каша рисовая": "Rice Porridge",
+    "Каша овсяная": "Oat Porridge",
+    "Каша из киноа": "Quinoa Porridge",
+    "Гранола с йогуртом": "Granola with Yogurt",
+    "Свежий салат": "Fresh Salad",
+    "Греческий салат": "Greek Salad",
+    "Китайский салат": "Chinese Salad",
+    "Муэр": "Mu-er Salad",
+    "Салат с копчёной сёмгой": "Smoked Salmon Salad",
+    "Цезарь с курицей": "Chicken Caesar Salad",
+    "Нисуаз с форелью": "Trout Nicoise Salad",
+    "Овощной салат с авокадо": "Vegetable Salad with Avocado",
+    "Азиатский салат": "Asian Salad",
+    "Аристократ": "Aristocrat Salad",
+    "Майо": "Mayo Salad",
+    "Хрустящий баклажан": "Crispy Eggplant Salad",
+    "Нежный краб": "Tender Crab Salad",
+    "Горячая фунчоза": "Hot Funchoza Salad",
+    "Капрезе": "Caprese Salad",
+    "Перепелиный суп": "Quail Soup",
+    "Чечевичный крем-суп": "Lentil Cream Soup",
+    "Мампар": "Mampar Soup",
+    "Шорпо из говядины": "Beef Shorpo",
+    "Шорпо из баранины": "Mutton Shorpo",
+    "Китайский суп": "Chinese Soup",
+    "Сливочный суп с форелью": "Creamy Trout Soup",
+    "Чучбара острая": "Spicy Chuchbara Soup",
+    "Жидкий лагман": "Lagman Soup",
+    "Пельмени со сметаной": "Pelmeni with Sour Cream",
+    "Пельмени": "Pelmeni Dumplings",
+    "Том Ям с морепродуктами": "Seafood Tom Yum",
+    "Мясо с овощами": "Meat with Vegetables",
+    "Куурдак из говядины": "Beef Kuurdak",
+    "Куурдак из баранины": "Mutton Kuurdak",
+    "Картофель по-домашнему": "Home-style Potatoes",
+    "Казан-кебаб с говядиной": "Kazan Kebab with Beef",
+    "Мясо по-китайски": "Chinese-style Meat",
+    "Босо лагман": "Boso Lagman Noodles",
+    "Медальоны": "Medallions",
+    "Телятина с картофелем": "Veal with Potatoes",
+    "Котлета по-киевски": "Chicken Kiev",
+    "Эскимо": "Eskimo Chicken Cutlets",
+    "Фрикасе с рисом": "Chicken Fricassee with Rice",
+    "Бефстроганов с пюре": "Beef Stroganoff with Mash",
+    "Мясо с фри": "Meat with French Fries",
+    "Фахитос с говядиной": "Beef Fajitas",
+    "Курица в кисло-сладком соусе": "Sweet and Sour Chicken",
+    "Форель жаренный": "Fried Trout",
+    "Жареный рис": "Fried Rice",
+    "Антрекот от шефа": "Chef's Antrecote",
+    "Кесадилья": "Quesadilla",
+    "Манты с мясом": "Meat Manti Dumplings",
+    "Манты 1 шт": "Manti 1 pc",
+    "Стейк из форели": "Trout Steak",
+    "Стейк из семги": "Salmon Steak",
+    "Тибон стейк": "T-Bone Steak",
+    "Рибай стейк": "Ribeye Steak",
+    "Ковбой стейк": "Cowboy Steak",
+    "4 Сыра": "Four Cheese Pizza",
+    "Цезарь": "Caesar Pizza",
+    "Фирменная «Самоор»": "Signature Samoor Pizza",
+    "Маргарита": "Margherita Pizza",
+    "Пепперони": "Pepperoni Pizza",
+    "Чили": "Chili Pizza",
+    "Куриная": "Chicken Pizza",
+    "Наггетсы": "Nuggets",
+    "Картофель фри с сосиской": "French Fries with Sausage",
+    "Вареники": "Vareniki Dumplings",
+    "Куриный суп": "Chicken Soup",
+    "Баранина на косточках": "Mutton Ribs Kebab",
+    "Говядина": "Beef Kebab",
+    "Курица филе": "Chicken Fillet Kebab",
+    "Курица на костях": "Chicken Bone-in Kebab",
+    "Крылышки": "Chicken Wings Kebab",
+    "Оромо кебаб": "Oromo Kebab",
+    "Кебаб в лаваше": "Kebab in Pita Roll",
+    "Кебаб в рубашке": "Kebab in Shirt",
+    "Люля-кебаб": "Lula Kebab",
+    "Ассорти шашлыков": "Assorted Kebabs Platter",
+    "Утиная грудка": "Duck Breast Kebab",
+    "Печень в рубашке": "Liver in Shirt Kebab",
+    "Печень обычная": "Classic Liver Kebab",
+    "Форель на мангале": "Grilled Trout (Whole)",
+    "Мякоть баранины": "Mutton Boneless Kebab",
+    "Антрекот": "Antrecote Kebab",
+    "Семечки": "Semechki Lamb Ribs Kebab",
+    "Фирменный шашлык «Самоор»": "Signature Samoor Kebab",
+    "Овощи на мангале": "Grilled Vegetables",
+    "Картофель на мангале": "Grilled Potatoes",
+    "Кукуруза на мангале": "Grilled Corn",
+    "Шампиньоны на мангале": "Grilled Mushrooms",
+    "Лепёшка на углях": "Flatbread on Coals",
+    "Шашлычный соус": "Kebab Sauce",
+    "Свежий лук": "Fresh Onion",
+    "Сет «Малый»": "Small Combo Set",
+    "Сет «Солидный»": "Premium Solid Combo Set",
+    "Сет на компанию \"Куурдак из Баранины\"": "Group Set 'Mutton Kuurdak'",
+    "Цезарь ролл": "Caesar Roll",
+    "Клаб-сэндвич": "Club Sandwich",
+    "Сырные палочки": "Cheese Sticks",
+    "Рулет из баклажанов": "Eggplant Rollups",
+    "Овощная нарезка": "Fresh Vegetable Platter",
+    "Сырная нарезка": "Cheese Board Selection",
+    "Мясная нарезка": "Cold Cuts Meat Platter",
+    "Чак-чак": "Chak-Chak Honey Pastry",
+    "Талкан": "Talkan traditional sweet",
+    "Боорсок с каймаком": "Boorsok with Clotted Cream",
+    "Нан": "Traditional Flatbread",
+    "Картофельное пюре": "Mashed Potatoes",
+    "Картофель фри": "French Fries",
+    "Картофель по-деревенски": "Rustic Country Potatoes",
+    "Крокеты": "Potato Croquettes",
+    "Сливочный": "Creamy Sauce",
+    "Сырный": "Cheese Sauce",
+    "Тартар": "Tartar Sauce",
+    "Чесночный": "Garlic Sauce",
+    "Майонез": "Mayonnaise",
+    "Кетчуп": "Ketchup",
+    "Халапеньо": "Jalapeno",
+    "Каймак домашний": "Homemade Kaymak",
+    "Сметана": "Sour Cream",
+    "Лазы": "Laza Chili Condiment",
+    "Зеленый чай": "Green Tea",
+    "Черный чай": "Black Tea",
+    "Ароматный чай": "Aromatic Tea",
+    "Ароматный  чай": "Aromatic Tea",
+    "Ягодный": "Berry Tea",
+    "Малина – чабрец": "Raspberry & Thyme Tea",
+    "Манго – маракуйя – ромашка": "Mango & Passion Fruit & Chamomile",
+    "Грейпфрут – апельсин": "Grapefruit & Orange Tea",
+    "Самоор": "Samoor Special Tea",
+    "Эспрессо": "Espresso",
+    "Американо": "Americano",
+    "Капучино": "Cappuccino",
+    "Латте": "Latte",
+    "Раф": "Raf Coffee",
+    "Мокко": "Mocha",
+    "Айс Бамбл": "Ice Bumble Coffee",
+    "Айс Латте": "Ice Latte",
+    "Эспрессо-тоник": "Espresso Tonic",
+    "Малина -тоник": "Raspberry Tonic",
+    "Сок «Самоор»": "Samoor House Juice",
+    "Лимонад «Самоор»": "Samoor House Lemonade",
+    "Компот «Самоор»": "Samoor Compote",
+    "Шоты «Самоор»": "Samoor Shot Samples",
+    "Манго–маракуйя": "Mango & Passion Fruit",
+    "Апельсиновый": "Orange Juice",
+    "Киви–апельсин": "Kiwi & Orange",
+    "Орео": "Oreo Milkshake",
+    "Банановый": "Banana Milkshake",
+    "Классический": "Classic Milkshake",
+    "Молочный коктейль": "Classic Milkshake",
+    "Цитрусовый": "Citrus Cocktail",
+    "Мохито": "Mojito Mocktail",
+    "Имбирный": "Ginger Mocktail",
+    "Клубничный": "Strawberry Mocktail",
+    "Легенда": "Legend Water",
+    "Байтик (газ.)": "Baytik Sparking Water",
+    "Кола": "Coca-Cola",
+    "Кола стекло": "Coca-Cola (Glass bottle)",
+    "Фанта": "Fanta",
+    "Спрайт": "Sprite",
+    "Schweppes": "Schweppes Tonic",
+    "Айран": "Ayran",
+    "Максым": "Maksym",
+    "Чалап": "Chalap",
+    "Бозо облепиха": "Sea buckthorn Bozo",
+    "Жарма": "Jharma",
+    "Яблочный": "Apple Juice",
+    "Морковный": "Carrot Juice",
+    "Курут": "Kurut dry cheese snack",
+    "Шоколад \"Кыргызстан\"": "Kyrgyzstan Chocolate Bar",
+    "Жевачка": "Chewing Gum",
+    "Куриное филе": "Marinated Chicken Fillet",
+    "Кебаб": "Marinated Kebab Meat",
+    "Утиные грудки": "Marinated Duck Breasts"
+  };
+  
+  for (const key in dictionary) {
+    if (name.includes(key)) {
+      return name.replace(key, dictionary[key]);
+    }
+  }
+  return name;
+}
+
+function translateIngredients(desc) {
+  if (!desc) return "";
+  
+  const ingredientsMap = {
+    "яйцо куриное": "chicken egg",
+    "яйцо": "egg",
+    "яицо кур.": "egg",
+    "яйцо кур.": "egg",
+    "яйцо перепелиное": "quail egg",
+    "яйцо пашот": "poached egg",
+    "яйца": "eggs",
+    "сливки": "cream",
+    "сыр моц.": "mozzarella cheese",
+    "сыр моцарелла": "mozzarella cheese",
+    "моцарелла в рассоле": "fresh mozzarella",
+    "сыр сулугуни": "suluguni cheese",
+    "сыр «фетакса»": "fetaxa cheese",
+    "сыр пармезан": "parmesan cheese",
+    "сыр творожный": "cream cheese",
+    "сыр брынза": "brynza cheese",
+    "сыр голландский": "gouda cheese",
+    "сыр": "cheese",
+    "микс салат": "mix salad",
+    "салат микс": "mix salad",
+    "салатный лист": "salad leaf",
+    "салат лист": "salad leaf",
+    "айсберг": "iceberg lettuce",
+    "руккола": "arugula",
+    "соус лимонный": "lemon sauce",
+    "лимонный соус": "lemon dressing",
+    "картофель": "potatoes",
+    "тостерный хлеб": "toasted bread",
+    "хлеб": "bread",
+    "семга копченая": "smoked salmon",
+    "сёмга копчёная": "smoked salmon",
+    "семга": "salmon",
+    "творог": "cottage cheese",
+    "сахар": "sugar",
+    "мука": "flour",
+    "йогурт": "yogurt",
+    "вишня коктейльная": "cocktail cherry",
+    "вишня": "cherry",
+    "масло растительное": "vegetable oil",
+    "масло сливочное": "butter",
+    "сливочное масло": "butter",
+    "молоко": "milk",
+    "сметана": "sour cream",
+    "помидоры": "tomatoes",
+    "лук репчатый": "onion",
+    "лук красный": "red onion",
+    "лук зелёный": "green onion",
+    "зелёный лук": "green onion",
+    "лук": "onion",
+    "перец болгарский": "bell pepper",
+    "болгарский перец": "bell pepper",
+    "перец полугорький": "mild chili pepper",
+    "перец чили": "chili pepper",
+    "перец": "pepper",
+    "томатная паста": "tomato paste",
+    "базилик": "basil",
+    "кинза": "cilantro",
+    "сосиски «тойбосс»": "Toyboss sausages",
+    "сосиски": "sausages",
+    "огурец": "cucumber",
+    "огурцы свежие": "fresh cucumbers",
+    "огурцы маринованные": "pickled cucumbers",
+    "огурцы": "cucumbers",
+    "корнишоны": "gherkins",
+    "кетчуп": "ketchup",
+    "кукуруза консервированная": "canned corn",
+    "кукуруза": "corn",
+    "рис": "rice",
+    "гранола": "granola",
+    "гранола из тыквенных семечек": "pumpkin seed granola",
+    "банан": "banana",
+    "оливки": "olives",
+    "маслины": "black olives",
+    "орегано": "oregano",
+    "фирменный соус": "house sauce",
+    "говядина": "beef",
+    "кунжут": "sesame",
+    "соевый соус": "soy sauce",
+    "чеснок": "garlic",
+    "грибы шиитаки": "shiitake mushrooms",
+    "грибы шитаки": "shiitake mushrooms",
+    "древесные грибы": "wood ear mushrooms",
+    "вешенки": "oyster mushrooms",
+    "шампиньоны": "mushrooms",
+    "грибы": "mushrooms",
+    "соус «цезарь»": "Caesar dressing",
+    "черри": "cherry tomatoes",
+    "сухари": "croutons",
+    "сухарики": "croutons",
+    "стеик форели": "trout steak",
+    "стейк форели": "trout steak",
+    "форель": "trout",
+    "брокколи": "broccoli",
+    "цветная капуста": "cauliflower",
+    "соус винегрет": "vinaigrette dressing",
+    "опята": "honey mushrooms",
+    "грейпфрут": "grapefruit",
+    "фисташки": "pistachios",
+    "майонез": "mayonnaise",
+    "кисло-сладкий соус": "sweet and sour sauce",
+    "крабовые палочки": "crab sticks",
+    "белокочанная капуста": "white cabbage",
+    "фунчоза": "cellophane glass noodles",
+    "лапша": "noodles",
+    "соус песто": "pesto sauce",
+    "кедровый орех": "pine nuts",
+    "бальзамический крем": "balsamic glaze",
+    "морковь": "carrot",
+    "бульон": "broth",
+    "чечевица": "lentil",
+    "лимон": "lemon",
+    "растительное масло": "vegetable oil",
+    "тесто": "dough",
+    "зелень": "herbs",
+    "укроп": "dill",
+    "имбирь": "ginger",
+    "виола": "Viola cheese",
+    "басай": "bok choy",
+    "сельдерей": "celery",
+    "мидии": "mussels",
+    "креветки": "shrimps",
+    "семга": "salmon",
+    "паста том ям": "Tom Yum paste",
+    "кокосовое молоко": "coconut milk",
+    "брюссельская капуста": "Brussels sprouts",
+    "жир": "fat",
+    "специи": "spices",
+    "красный соус": "red sauce",
+    "чеддер": "cheddar cheese",
+    "колбаса": "sausages",
+    "пепперони": "pepperoni",
+    "халапеньо": "jalapenos",
+    "тортилья": "tortilla wrapper",
+    "сладкий чили": "sweet chili",
+    "пико де гайо": "pico de gallo",
+    "ежевика": "blackberry",
+    "малина": "raspberry",
+    "чабрец": "thyme",
+    "манго пюре": "mango puree",
+    "пюре маракуйи": "passion fruit puree",
+    "апельсин": "orange",
+    "облепиха": "sea buckthorn",
+    "лайм": "lime",
+    "мед": "honey",
+    "тоник": "tonic water",
+    "сок малины": "raspberry juice",
+    "чучук": "chuchuk (horse sausage)",
+    "жая": "zhaya (cured horse meat)",
+    "каймак": "kaymak",
+    "цезарь": "Caesar",
+    "пицца": "pizza",
+    "картофель фри": "french fries",
+    "соус тартар": "tartar sauce",
+    "соус «тар-тар»": "tartar sauce",
+    "зернистая горчица": "wholegrain mustard",
+    "горчица зернистая": "wholegrain mustard",
+    "грецкий орех": "walnut",
+    "мёд": "honey"
+  };
+
+  let translated = desc.toLowerCase();
+  for (const key in ingredientsMap) {
+    const regex = new RegExp(key, 'gi');
+    translated = translated.replace(regex, ingredientsMap[key]);
+  }
+  return translated.charAt(0).toUpperCase() + translated.slice(1);
+}
+
+function translatePortion(portion) {
+  if (!portion) return "";
+  return portion
+    .replace(/гр/g, "g")
+    .replace(/мл/g, "ml")
+    .replace(/шт/g, "pc")
+    .replace(/порция/g, "portion")
+    .replace(/порции/g, "portions")
+    .replace(/кг/g, "kg")
+    .replace(/целиком/g, "whole")
+    .replace(/целая/g, "whole");
+}
+
+function translatePageUI(lang) {
+  const isEn = lang === "en";
+  
+  const mainTitle = document.querySelector(".hero-content h1");
+  if (mainTitle) mainTitle.textContent = isEn ? "Samoor Restaurant" : "Ресторан Самоор";
+  
+  const mainSubtitle = document.querySelector(".hero-content h2");
+  if (mainSubtitle) mainSubtitle.textContent = isEn ? "National & European Cuisine" : "Национальная и европейская кухня";
+  
+  const mainHeroDesc = document.querySelector(".hero-content p");
+  if (mainHeroDesc) mainHeroDesc.textContent = isEn ? "Taste the flavor of our signature grilled kebab." : "Почувствуйте вкус фирменного шашлыка на углях.";
+
+  if (DOM.searchInput) {
+    DOM.searchInput.placeholder = isEn ? "Search dishes..." : "Поиск блюд...";
+  }
+  
+  const callWaiterBtn = document.getElementById("call-waiter-btn");
+  if (callWaiterBtn) {
+    callWaiterBtn.innerHTML = isEn ? 'Call Waiter <i class="fa-solid fa-bell" style="margin-left: 8px;"></i>' : 'Позвать официанта <i class="fa-solid fa-bell" style="margin-left: 8px;"></i>';
+  }
+
+  const cartHeader = document.querySelector(".cart-header h2");
+  if (cartHeader) cartHeader.textContent = isEn ? "Your Cart" : "Корзина";
+  
+  const emptyCartText = document.querySelector(".empty-cart p");
+  if (emptyCartText) emptyCartText.textContent = isEn ? "Your cart is empty" : "Ваша корзина пуста";
+  
+  const placeOrderBtnText = document.querySelector("#checkout-btn .btn-text");
+  if (placeOrderBtnText) placeOrderBtnText.textContent = isEn ? "Place Order" : "Оформить заказ";
+  
+  const cartTotalText = document.querySelector(".cart-total span:first-child");
+  if (cartTotalText) cartTotalText.textContent = isEn ? "Total:" : "Итого:";
+
+  // Cart summary labels translation
+  const subtotalLabel = document.querySelector("#cart-footer-panel .summary-row:nth-child(1) span:first-child");
+  if (subtotalLabel) subtotalLabel.textContent = isEn ? "Subtotal:" : "Сумма заказа:";
+
+  const deliveryLabel = document.querySelector("#cart-footer-panel .summary-row:nth-child(2) span:first-child");
+  if (deliveryLabel) deliveryLabel.textContent = isEn ? "Delivery:" : "Доставка:";
+
+  const promoLabel = document.querySelector("#row-promo-discount span:first-child");
+  if (promoLabel) promoLabel.textContent = isEn ? "Promo discount:" : "Скидка по промокоду:";
+
+  const totalLabel = document.querySelector("#cart-footer-panel .summary-row.total span:first-child");
+  if (totalLabel) totalLabel.textContent = isEn ? "Total to pay:" : "Итого к оплате:";
+
+  if (DOM.promoInput) {
+    DOM.promoInput.placeholder = isEn ? "Promo code..." : "Промокод...";
+  }
+
+  const checkoutTitle = document.querySelector("#checkout-modal .modal-header h2");
+  if (checkoutTitle) checkoutTitle.textContent = isEn ? "Place Order" : "Оформление заказа";
+
+  const labelName = document.querySelector("label[for='checkout-name']");
+  if (labelName) labelName.textContent = isEn ? "Your name" : "Ваше имя";
+
+  const labelPhone = document.querySelector("label[for='checkout-phone']");
+  if (labelPhone) labelPhone.textContent = isEn ? "Phone number" : "Номер телефона";
+  
+  const labelAddress = document.querySelector("label[for='checkout-address']");
+  if (labelAddress) labelAddress.textContent = isEn ? "Delivery Address" : "Адрес доставки";
+
+  const labelPayment = document.querySelector("#checkout-form .form-group:nth-of-type(4) label");
+  if (labelPayment) labelPayment.textContent = isEn ? "Payment Method" : "Способ оплаты";
+
+  const chipCash = document.querySelector("#pay-cash span");
+  if (chipCash) chipCash.textContent = isEn ? "Cash" : "Наличными";
+  
+  const chipCard = document.querySelector("#pay-card span");
+  if (chipCard) chipCard.textContent = isEn ? "Card to courier" : "Картой курьеру";
+  
+  const chipOnline = document.querySelector("#pay-online span");
+  if (chipOnline) chipOnline.textContent = isEn ? "QR Code Payment" : "Оплата по QR коду";
+
+  const labelComment = document.querySelector("label[for='checkout-comment']");
+  if (labelComment) labelComment.textContent = isEn ? "Order Comment" : "Комментарий к заказу";
+
+  const submitCheckoutBtnText = document.querySelector("#submit-checkout-btn span");
+  if (submitCheckoutBtnText) submitCheckoutBtnText.textContent = isEn ? "Next" : "Далее";
+
+  const verifConfirmBtnText = document.querySelector("#verif-confirm-btn span");
+  if (verifConfirmBtnText) verifConfirmBtnText.textContent = isEn ? "Yes, everything is correct!" : "Да, всё верно!";
+
+  const verifBackBtn = document.getElementById("verif-back-btn");
+  if (verifBackBtn) verifBackBtn.textContent = isEn ? "Change" : "Изменить";
+
+  const waiterTitle = document.querySelector("#waiter-modal .modal-header h2");
+  if (waiterTitle) waiterTitle.textContent = isEn ? "Call Waiter" : "Вызов официанта";
+
+  const labelTable = document.querySelector("label[for='waiter-table-number']");
+  if (labelTable) labelTable.textContent = isEn ? "Table number" : "Номер столика";
+
+  if (DOM.waiterTable) {
+    DOM.waiterTable.placeholder = isEn ? "Enter your table number" : "Введите номер вашего столика";
+  }
+
+  const sendWaiterBtn = document.querySelector("#waiter-form button[type='submit'] span");
+  if (sendWaiterBtn) sendWaiterBtn.textContent = isEn ? "Send Request" : "Отправить вызов";
+
+  const settingsTitle = document.querySelector("#settings-modal .modal-header h2");
+  if (settingsTitle) settingsTitle.textContent = isEn ? "Settings & Support" : "Настройки и поддержка";
+
+  const themeSectionHeader = document.querySelector("#settings-modal .settings-section h3");
+  if (themeSectionHeader) themeSectionHeader.textContent = isEn ? "Color Theme" : "Тема оформления";
+
+  const darkThemeBtnText = document.querySelector("#theme-dark-btn span");
+  if (darkThemeBtnText) darkThemeBtnText.textContent = isEn ? "Dark" : "Тёмная";
+
+  const lightThemeBtnText = document.querySelector("#theme-light-btn span");
+  if (lightThemeBtnText) lightThemeBtnText.textContent = isEn ? "Light" : "Светлая";
+
+  const supportSectionHeader = document.querySelector("#settings-modal .settings-section:nth-of-type(2) h3");
+  if (supportSectionHeader) supportSectionHeader.textContent = isEn ? "Customer Support" : "Служба поддержки";
+
+  const supportMessageLabel = document.querySelector("label[for='support-message']");
+  if (supportMessageLabel) supportMessageLabel.textContent = isEn ? "What happened?" : "Что случилось?";
+
+  const supportSubmitBtnText = document.querySelector("#support-submit-btn span");
+  if (supportSubmitBtnText) supportSubmitBtnText.textContent = isEn ? "Send request" : "Отправить обращение";
+
+  const supportPhoneLabel = document.querySelector("label[for='support-phone']");
+  if (supportPhoneLabel) supportPhoneLabel.textContent = isEn ? "Your phone number" : "Ваш номер телефона";
 }
 
 // Helper to update logos and favicon based on selected theme

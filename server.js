@@ -182,22 +182,31 @@ app.post('/api/order', async (req, res) => {
         } else {
           statsDb.orders.delivery++;
         }
-        statsDb.revenue += Number(order.total) || 0;
+        // If USD order, convert total back to KGS (without the 20% markup) for statistics
+        const conversionRate = 89;
+        const kgsTotal = order.currency === "USD" ? (order.total * conversionRate) / 1.2 : order.total;
+        statsDb.revenue += Number(kgsTotal) || 0;
         saveStatsDb();
       } catch (statsErr) {
         console.error('Failed to update stats on order:', statsErr);
       }
 
+      const formatBackendPrice = (price, curr) => {
+        const num = parseFloat(price);
+        if (isNaN(num)) return price;
+        return curr === "USD" ? `$${num.toFixed(2)}` : `${Math.round(num)} сом`;
+      };
+
       let itemsList = "";
       order.items.forEach((item, idx) => {
-        itemsList += `${idx + 1}. *${item.name}* x${item.quantity} — ${item.price * item.quantity} сом\n`;
+        itemsList += `${idx + 1}. *${item.name}* x${item.quantity} — ${formatBackendPrice(item.price * item.quantity, order.currency)}\n`;
       });
 
       const prefText = order.communication === "call" ? "Позвонить мне" : "Только написать";
       
       let payText = "";
       if (order.payment.method === "cash") {
-        payText = `Наличными (${order.payment.no_change ? 'Без сдачи' : 'Сдача с ' + order.payment.change_from + ' сом'})`;
+        payText = `Наличными (${order.payment.no_change ? 'Без сдачи' : 'Сдача с ' + formatBackendPrice(order.payment.change_from, order.currency)})`;
       } else if (order.payment.method === "card") {
         payText = "Картой курьеру";
       } else {
@@ -211,11 +220,11 @@ app.post('/api/order', async (req, res) => {
                     `📍 *Адрес:* ${order.customer.address}\n` +
                     `📞 *Связь:* ${prefText}\n` +
                     `💳 *Оплата:* ${payText}\n` +
-                    (order.promo_code ? `🎟️ *Промокод:* ${order.promo_code} (-${order.promo_discount} сом)\n` : '') +
+                    (order.promo_code ? `🎟️ *Промокод:* ${order.promo_code} (-${formatBackendPrice(order.promo_discount, order.currency)})\n` : '') +
                     (order.customer.comment ? `💬 *Комментарий:* ${order.customer.comment}\n` : '') +
                     `📦 *Блюда:*\n${itemsList}` +
-                    `🚗 *Доставка:* ${order.delivery === 0 ? 'Бесплатно' : order.delivery + ' сом'}\n` +
-                    `💰 *Итого к оплате:* *${order.total} сом*`;
+                    `🚗 *Доставка:* ${order.delivery === 0 ? 'Бесплатно' : formatBackendPrice(order.delivery, order.currency)}\n` +
+                    `💰 *Итого к оплате:* *${formatBackendPrice(order.total, order.currency)}*`;
     }
 
     const apiURL = `https://api.telegram.org/bot${token}/sendMessage`;
