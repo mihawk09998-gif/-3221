@@ -271,13 +271,23 @@ async function loadDishes() {
     const res = await fetch(`/api/dishes?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     dishesList = await res.json();
-    console.log(`Successfully fetched ${dishesList.length} dishes from backend API.`);
+    if (!Array.isArray(dishesList) || dishesList.length === 0) {
+      console.warn("Backend API returned empty dishes, using defaults.");
+      dishesList = getDefaultDishes();
+    } else {
+      console.log(`Successfully fetched ${dishesList.length} dishes from backend API.`);
+    }
   } catch (err) {
     console.warn("Failed to fetch dishes from backend, falling back to local cache:", err);
     const saved = storage.get("samoor_dishes");
     if (saved) {
       try {
-        dishesList = JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          dishesList = parsed;
+        } else {
+          dishesList = getDefaultDishes();
+        }
       } catch (e) {
         console.error("Error parsing saved dishes, loading defaults:", e);
         dishesList = getDefaultDishes();
@@ -501,10 +511,13 @@ function renderDishes() {
   
   // Filter dishes based on active category and search query
   let filtered = dishesList.filter(dish => {
+    const nameStr = dish.name ? String(dish.name) : "";
+    const descStr = dish.description ? String(dish.description) : "";
+    
     const matchesCategory = activeCategory === "all" || dish.category === activeCategory;
     const matchesSearch = searchQuery === "" || 
-      dish.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      (dish.description && dish.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      nameStr.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      descStr.toLowerCase().includes(searchQuery.toLowerCase());
     
     // If search query is active, ignore category filtering to allow global search
     return searchQuery !== "" ? matchesSearch : (matchesCategory && matchesSearch);

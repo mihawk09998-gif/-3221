@@ -3,7 +3,7 @@
  * Caches core assets to enable offline menu viewing and fast startup speeds.
  */
 
-const CACHE_NAME = 'samor-pwa-cache-v4';
+const CACHE_NAME = 'samor-pwa-cache-v12';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -44,6 +44,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   // Pass non-GET requests through (like Telegram Bot POST requests)
   if (event.request.method !== 'GET') return;
+
+  // Do not cache API endpoints (always load fresh database)
+  if (event.request.url.includes('/api/')) return;
 
   // Do not intercept Chrome extensions or foreign API calls
   if (!event.request.url.startsWith(self.location.origin)) return;
