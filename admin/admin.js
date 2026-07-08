@@ -152,41 +152,49 @@ async function loadDatabase() {
     dishesList = await res.json();
     console.log(`Loaded ${dishesList.length} dishes from server.`);
 
-    // Check for auto-restoration backup trigger
+    // Check for auto-restoration backup trigger by comparing custom image counts
     const backupStr = localStorage.getItem("samoor_db_backup");
+    let currentBackupImgCount = 0;
+    let backupList = [];
     if (backupStr) {
       try {
-        const backupList = JSON.parse(backupStr);
-        if (Array.isArray(backupList) && backupList.length > 10 && (!Array.isArray(dishesList) || dishesList.length <= 10)) {
-          const confirmRestore = confirm(
-            `Внимание! На сервере обнаружена пустая или сброшенная база данных (${dishesList.length} блюд).\n\n` +
-            `У вас в браузере сохранена автоматическая копия базы (${backupList.length} блюд с вашими фотографиями).\n\n` +
-            `Хотите автоматически восстановить ваши блюда на сервер?`
-          );
-          if (confirmRestore) {
-            console.log("Restoring server database from browser backup...");
-            const restoreRes = await fetch('/api/dishes/bulk', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: backupStr
-            });
-            if (restoreRes.ok) {
-              alert("База данных успешно восстановлена на сервере!");
-              dishesList = backupList;
-              updateStats();
-            } else {
-              alert("Не удалось восстановить базу данных на сервере.");
-            }
-          }
+        backupList = JSON.parse(backupStr);
+        if (Array.isArray(backupList)) {
+          currentBackupImgCount = backupList.filter(d => d.image && d.image.includes("ibb.co")).length;
         }
-      } catch (e) {
-        console.error("Error running auto-restore check:", e);
+      } catch(e) {}
+    }
+
+    const serverImgCount = Array.isArray(dishesList) ? dishesList.filter(d => d.image && d.image.includes("ibb.co")).length : 0;
+
+    if (currentBackupImgCount > serverImgCount && backupList.length > 10) {
+      const confirmRestore = confirm(
+        `Внимание! На сервере обнаружен сброс базы данных (кол-во блюд с фото: на сервере ${serverImgCount}, в вашей копии ${currentBackupImgCount}).\n\n` +
+        `Хотите автоматически восстановить ваши добавленные блюда и фотографии на сервер?`
+      );
+      if (confirmRestore) {
+        console.log("Restoring server database from browser backup...");
+        const restoreRes = await fetch('/api/dishes/bulk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: backupStr
+        });
+        if (restoreRes.ok) {
+          alert("База данных успешно восстановлена на сервере!");
+          dishesList = backupList;
+          updateStats();
+        } else {
+          alert("Не удалось восстановить базу данных на сервере.");
+        }
       }
     }
 
-    // Save clean local backup of server dishes if valid
+    // Save clean local backup of server dishes only if it has equal or more custom images than current backup
     if (Array.isArray(dishesList) && dishesList.length > 10) {
-      localStorage.setItem("samoor_db_backup", JSON.stringify(dishesList));
+      const newServerImgCount = dishesList.filter(d => d.image && d.image.includes("ibb.co")).length;
+      if (newServerImgCount >= currentBackupImgCount) {
+        localStorage.setItem("samoor_db_backup", JSON.stringify(dishesList));
+      }
     }
   } catch (err) {
     console.error("Error loading dishes from server, falling back to localStorage:", err);
