@@ -292,6 +292,23 @@ app.post('/api/dishes', (req, res) => {
   }
 });
 
+// Bulk restore dishes
+app.post('/api/dishes/bulk', (req, res) => {
+  try {
+    const list = req.body;
+    if (!Array.isArray(list)) {
+      return res.status(400).json({ error: 'Request body must be a JSON array of dishes.' });
+    }
+    dishesDb = list;
+    saveDishesDb();
+    console.log(`Bulk restored ${dishesDb.length} dishes successfully.`);
+    return res.status(200).json({ success: true, count: dishesDb.length });
+  } catch (error) {
+    console.error('Error in POST /api/dishes/bulk:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
 // 3. UPDATE A DISH
 app.put('/api/dishes/:id', (req, res) => {
   try {

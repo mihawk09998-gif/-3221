@@ -34,6 +34,9 @@ const DOM = {
   // Actions
   searchInput: document.getElementById("admin-search"),
   addDishBtn: document.getElementById("add-dish-btn"),
+  exportDbBtn: document.getElementById("export-db-btn"),
+  importDbBtn: document.getElementById("import-db-btn"),
+  importDbFile: document.getElementById("import-db-file"),
   
   // CRUD table
   tableBody: document.getElementById("dishes-table-body"),
@@ -148,6 +151,43 @@ async function loadDatabase() {
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     dishesList = await res.json();
     console.log(`Loaded ${dishesList.length} dishes from server.`);
+
+    // Check for auto-restoration backup trigger
+    const backupStr = localStorage.getItem("samoor_db_backup");
+    if (backupStr) {
+      try {
+        const backupList = JSON.parse(backupStr);
+        if (Array.isArray(backupList) && backupList.length > 10 && (!Array.isArray(dishesList) || dishesList.length <= 10)) {
+          const confirmRestore = confirm(
+            `Внимание! На сервере обнаружена пустая или сброшенная база данных (${dishesList.length} блюд).\n\n` +
+            `У вас в браузере сохранена автоматическая копия базы (${backupList.length} блюд с вашими фотографиями).\n\n` +
+            `Хотите автоматически восстановить ваши блюда на сервер?`
+          );
+          if (confirmRestore) {
+            console.log("Restoring server database from browser backup...");
+            const restoreRes = await fetch('/api/dishes/bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: backupStr
+            });
+            if (restoreRes.ok) {
+              alert("База данных успешно восстановлена на сервере!");
+              dishesList = backupList;
+              updateStats();
+            } else {
+              alert("Не удалось восстановить базу данных на сервере.");
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error running auto-restore check:", e);
+      }
+    }
+
+    // Save clean local backup of server dishes if valid
+    if (Array.isArray(dishesList) && dishesList.length > 10) {
+      localStorage.setItem("samoor_db_backup", JSON.stringify(dishesList));
+    }
   } catch (err) {
     console.error("Error loading dishes from server, falling back to localStorage:", err);
     const saved = localStorage.getItem("samoor_dishes");
@@ -822,6 +862,74 @@ function switchTab(tabName) {
   }
 }
 
+// Export database to a downloaded JSON file
+function handleExportDatabase() {
+  if (!dishesList || dishesList.length === 0) {
+    alert("База данных блюд пуста.");
+    return;
+  }
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dishesList, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", "dishes.json");
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+// Trigger file input click
+function handleImportDatabaseClick() {
+  if (DOM.importDbFile) {
+    DOM.importDbFile.click();
+  }
+}
+
+// Handle file input file selection and upload
+async function handleImportFileChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const confirmImport = confirm("Вы уверены, что хотите импортировать базу данных? Это заменит все текущие блюда на сервере!");
+  if (!confirmImport) {
+    e.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async function(event) {
+    try {
+      const parsedData = JSON.parse(event.target.result);
+      if (!Array.isArray(parsedData)) {
+        throw new Error("Файл должен содержать JSON-массив блюд.");
+      }
+
+      console.log(`Uploading bulk database of ${parsedData.length} dishes...`);
+      const res = await fetch('/api/dishes/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsedData)
+      });
+
+      if (res.ok) {
+        alert("База данных успешно импортирована!");
+        dishesList = parsedData;
+        localStorage.setItem("samoor_db_backup", JSON.stringify(dishesList));
+        renderDishesTable();
+        updateStats();
+      } else {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Неизвестный сбой сервера.");
+      }
+    } catch (err) {
+      console.error("Failed to import database file:", err);
+      alert(`Ошибка при импорте базы данных: ${err.message}`);
+    } finally {
+      e.target.value = "";
+    }
+  };
+  reader.readAsText(file);
+}
+
 // ==========================================================================
 // EVENT BINDINGS
 // ==========================================================================
@@ -886,6 +994,17 @@ function setupListeners() {
   }
   if (DOM.promoForm) {
     DOM.promoForm.addEventListener("submit", handlePromoFormSubmit);
+  }
+
+  // Database Backup/Restore Actions
+  if (DOM.exportDbBtn) {
+    DOM.exportDbBtn.addEventListener("click", handleExportDatabase);
+  }
+  if (DOM.importDbBtn) {
+    DOM.importDbBtn.addEventListener("click", handleImportDatabaseClick);
+  }
+  if (DOM.importDbFile) {
+    DOM.importDbFile.addEventListener("change", handleImportFileChange);
   }
 }
 

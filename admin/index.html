@@ -135,6 +135,27 @@
           </svg>
           <input type="text" class="admin-search-input" id="admin-search" placeholder="Поиск по названию блюда...">
         </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="admin-btn secondary" id="export-db-btn" title="Скачать резервную копию базы меню в JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Экспорт базы</span>
+          </button>
+          
+          <button class="admin-btn secondary" id="import-db-btn" title="Загрузить резервную копию базы меню из JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Импорт базы</span>
+          </button>
+          <input type="file" id="import-db-file" accept=".json" style="display: none;">
+        </div>
+
         <button class="admin-btn primary" id="add-dish-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -333,6 +354,6 @@
   <!-- Scripts -->
   <script src="../menu-data.js"></script>
   <script src="../config.js"></script>
-  <script src="./admin.js?v=5"></script>
+  <script src="./admin.js?v=6"></script>
 </body>
 </html>
