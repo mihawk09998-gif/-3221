@@ -150,6 +150,13 @@ async function loadDatabase() {
     const res = await fetch(`/api/dishes?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
     dishesList = await res.json();
+    if (Array.isArray(dishesList)) {
+      dishesList.forEach(d => {
+        if (d.image && !d.image_url) {
+          d.image_url = d.image;
+        }
+      });
+    }
     console.log(`Loaded ${dishesList.length} dishes from server.`);
 
     // Check for auto-restoration backup trigger by comparing custom image counts

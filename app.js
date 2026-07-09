@@ -286,6 +286,12 @@ async function loadDishes() {
       console.warn("Backend API returned empty dishes, using defaults.");
       dishesList = getDefaultDishes();
     } else {
+      // Unify image field names (support both image and image_url)
+      dishesList.forEach(d => {
+        if (d.image && !d.image_url) {
+          d.image_url = d.image;
+        }
+      });
       console.log(`Successfully fetched ${dishesList.length} dishes from backend API.`);
     }
   } catch (err) {
